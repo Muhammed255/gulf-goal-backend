@@ -1,7 +1,7 @@
 export const appConfig = {
     securityCode: '$#GR24T4344$#$@#%WTEWTEAE%$6',
     database: 'mongodb+srv://Mhmd:cs6kwkD7aduEmSZ@cluster0.8xdx0.mongodb.net/gulf-goal?retryWrites=true&w=majority',
-    port: 3000,
+    port: process.env.PORT || 3000,
     google: {
         clientId: '131881189995-6u4f4fhkco7h0jjq1ak6kmnqrfn6q6od.apps.googleusercontent.com',
         clientSecret: '9CiPDwTaNLO_02uaiCUN6eWd',
