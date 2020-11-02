@@ -1,26 +1,21 @@
 import path from "path";
-import { dirname } from 'path';
-import { fileURLToPath } from "url";
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "passport";
 
-import { userRoutes } from "./routes/user.routes.mjs";
-import { appConfig } from "./middleware/app-config.mjs";
-import { jwtConfig } from "./middleware/passport-jwt.mjs";
-import { PassportGoogle } from "./middleware/passport-google.mjs";
-import User from "./models/user.model.mjs";
-import { FacebookPassport } from "./middleware/passport-facebook.mjs";
-import { newsRoutes } from "./routes/news.routes.mjs";
-import { teamsRoutes } from "./routes/teams.routes.mjs";
+import { userRoutes } from "./routes/user.routes.js";
+import { appConfig } from "./middleware/app-config.js";
+import { jwtConfig } from "./middleware/passport-jwt.js";
+import { PassportGoogle } from "./middleware/passport-google.js";
+import User from "./models/user.model.js";
+import { FacebookPassport } from "./middleware/passport-facebook.js";
+import { newsRoutes } from "./routes/news.routes.js";
+import { teamsRoutes } from "./routes/teams.routes.js";
 
 const app = express();
 const port = appConfig.port;
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 mongoose.Promise = global.Promise;
 

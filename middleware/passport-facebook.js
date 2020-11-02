@@ -1,7 +1,7 @@
 import passport from "passport";
 import FacebookStrategy from "passport-facebook";
-import User from "../models/user.model.mjs";
-import { appConfig } from "./app-config.mjs";
+import User from "../models/user.model.js";
+import { appConfig } from "./app-config.js";
 
 export const FacebookPassport = () => {
   passport.use(

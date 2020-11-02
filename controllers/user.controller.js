@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { appConfig } from "../middleware/app-config.mjs";
-import User from "../models/user.model.mjs";
+import { appConfig } from "../middleware/app-config.js";
+import User from "../models/user.model.js";
 
 export default {
   async signup(req, res, next) {

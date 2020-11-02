@@ -1,7 +1,7 @@
 import passport from "passport";
 import passportJWT from "passport-jwt";
-import User from "../models/user.model.mjs";
-import { appConfig } from "./app-config.mjs";
+import User from "../models/user.model.js";
+import { appConfig } from "./app-config.js";
 
 var JwtStrategy = passportJWT.Strategy,
   ExtractJwt = passportJWT.ExtractJwt;

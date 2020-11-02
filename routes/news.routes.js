@@ -2,7 +2,7 @@ import path from "path";
 import express from "express";
 import multer from "multer";
 import passport from "passport";
-import newsController from "../controllers/news.controller.mjs";
+import newsController from "../controllers/news.controller.js";
 
 const MIME_TYPE_MAP = {
   "image/jpg": "jpg",

@@ -1,6 +1,6 @@
 
 import Axios from "axios";
-import { appConfig } from "../middleware/app-config.mjs";
+import { appConfig } from "../middleware/app-config.js";
 
 export default {
   getTeams(req, res, next) {

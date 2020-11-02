@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "npm install && npm run start"
   },
+  "type": "module",
   "author": "Mohamed",
   "license": "ISC",
   "dependencies": {

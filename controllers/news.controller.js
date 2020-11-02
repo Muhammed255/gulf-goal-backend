@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import mongooseQ from "mongoose-queue";
 const MongooseQueue = mongooseQ.MongooseQueue;
 
-import News from "../models/news.model.mjs";
-import User from "../models/user.model.mjs";
+import News from "../models/news.model.js";
+import User from "../models/user.model.js";
 
 export default {
   async addNews(req, res, next) {
