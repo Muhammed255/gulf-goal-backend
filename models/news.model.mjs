@@ -73,6 +73,9 @@ const newsSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  teamId: {
+    type:String
+  },
   created_at: {
     type: Date,
     default: Date.now,

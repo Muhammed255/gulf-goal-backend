@@ -8,13 +8,14 @@ import User from "../models/user.model.mjs";
 export default {
   async addNews(req, res, next) {
     try {
-      const { title, content } = req.body;
+      const { title, content, teamId } = req.body;
       const url = req.protocol + "://" + req.get("host");
       const news = new News({
         title,
         content,
         image: url + "/images/" + req.file.originalname,
         userId: req.userData._id,
+        teamId
       });
       await news.save();
       res.status(200).json({ success: true, msg: "News created !!" });
@@ -47,7 +48,7 @@ export default {
 
   async updateNews(req, res, next) {
     try {
-      const { title, content } = req.body;
+      const { title, content, teamId } = req.body;
       const url = req.protocol + "://" + req.get("host");
       const newsToUpdate = await News.findById(req.params.newsId);
       if (!newsToUpdate) {
@@ -63,7 +64,7 @@ export default {
 
       await News.findByIdAndUpdate(
         req.params.newsId,
-        { title, content, image: imagePath },
+        { title, content, image: imagePath, teamId },
         { new: true }
       );
       res.status(200).json({ success: true, msg: "News Updated !!" });

@@ -1,4 +1,4 @@
-import path, { join } from "path";
+import path, { __dirname } from "path";
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
