@@ -1,7 +1,7 @@
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth";
-import User from "../models/user.model";
-import { appConfig } from "./app-config";
+import User from "../models/user.model.mjs";
+import { appConfig } from "./app-config.mjs";
 
 export const PassportGoogle = () => {
   passport.use(

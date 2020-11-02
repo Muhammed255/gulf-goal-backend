@@ -3,16 +3,16 @@ import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import session from "express-session";
-
-import { userRoutes } from "./routes/user.routes";
-import { appConfig } from "./middleware/app-config";
 import passport from "passport";
-import { jwtConfig } from "./middleware/passport-jwt";
-import { PassportGoogle } from "./middleware/passport-google";
-import User from "./models/user.model";
-import { FacebookPassport } from "./middleware/passport-facebook";
-import { newsRoutes } from "./routes/news.routes";
-import { teamsRoutes } from "./routes/teams.routes";
+
+import { userRoutes } from "./routes/user.routes.mjs";
+import { appConfig } from "./middleware/app-config.mjs";
+import { jwtConfig } from "./middleware/passport-jwt.mjs";
+import { PassportGoogle } from "./middleware/passport-google.mjs";
+import User from "./models/user.model.mjs";
+import { FacebookPassport } from "./middleware/passport-facebook.mjs";
+import { newsRoutes } from "./routes/news.routes.mjs";
+import { teamsRoutes } from "./routes/teams.routes.mjs";
 
 const app = express();
 const port = appConfig.port;

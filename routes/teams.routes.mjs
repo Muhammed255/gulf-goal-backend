@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import teamsController from "../controllers/teams.controller";
+import teamsController from "../controllers/teams.controller.mjs";
 
 export const teamsRoutes = express.Router();
 

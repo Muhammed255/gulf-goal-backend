@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "babel-node --preset es2015 app.js",
+    "start": "node --experimental-modules app.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "npm install && npm run start"
   },
