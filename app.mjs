@@ -1,5 +1,6 @@
 import path from "path";
 import { dirname } from 'path';
+import { fileURLToPath } from "url";
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
@@ -17,9 +18,6 @@ import { teamsRoutes } from "./routes/teams.routes.mjs";
 
 const app = express();
 const port = appConfig.port;
-
-import { dirname } from 'path';
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
