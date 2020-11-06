@@ -7,7 +7,6 @@ const ObjectId = mongoose.Types.ObjectId;
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
   local: {
-    name: String,
     email: String,
     username: String,
     password: String,
@@ -33,11 +32,6 @@ var userSchema = new mongoose.Schema({
     enum: ["English", "Arabic", "Espanol", "hebrew"],
     default: "English",
   },
-  trends: [{
-    type: ObjectId,
-    ref: 'News',
-    unique: true,
-  }]
 });
 
 userSchema.statics.getTrends=function() {

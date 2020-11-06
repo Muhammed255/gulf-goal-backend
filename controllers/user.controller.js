@@ -6,21 +6,31 @@ import User from "../models/user.model.js";
 export default {
   async signup(req, res, next) {
     try {
-      const { name, username, email, password, preferredLanguage } = req.body;
-      const newUser = new User();
-      newUser.local.name = name;
-      newUser.local.username = username;
-      newUser.local.email = email;
-      newUser.local.preferredLanguage = preferredLanguage;
+      const { username, email, password, preferredLanguage } = req.body;
+      // const newUser = new User();
+      // newUser.local.name = name;
+      // newUser.local.username = username;
+      // newUser.local.email = email;
+      // newUser.local.preferredLanguage = preferredLanguage;
       const salt = await bcrypt.genSalt();
       const hash = await bcrypt.hash(password, salt);
-      newUser.local.password = hash;
 
-      await newUser.save();
+      const user = await User.create({
+        'local.username': username,
+        'local.email': email,
+        'local.password': hash,
+        'local.preferredLanguage': preferredLanguage
+      })
+      console.log('user: ' +user)
+
+      const token = jwt.sign({ userId: user._id }, appConfig.securityCode, {
+         expiresIn: "1d",
+      });
       res
         .status(200)
-        .json({ success: true, msg: "registered successfully ...." });
+        .json({ success: true, msg: "registered successfully ....", token });
     } catch (err) {
+      console.log('Error: '+err)
       return res.status(500).json({ err });
     }
   },

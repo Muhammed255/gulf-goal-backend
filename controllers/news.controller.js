@@ -39,7 +39,7 @@ export default {
 
   async allNews(req, res, next) {
     try {
-      const allNews = await News.find().sort({ created_at: -1 });
+      const allNews = await News.find().sort({ created_at: -1 }).populate("comments.commentator")
       res.status(200).json({ success: true, msg: "News Fetched !!", allNews });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Error Occured !!", err });
@@ -196,7 +196,7 @@ export default {
           .json({ success: false, msg: "No comment provided" });
       }
 
-      const newsToComment = await News.findOne({ _id: req.body.newsId });
+      const newsToComment = await News.findOne({ _id: req.body.newsId })
       if (!newsToComment) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
@@ -316,7 +316,7 @@ export default {
       if (!fetchedUser) {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
-      const newsIndex = fetchedUser.trends.findIndex(
+      const newsIndex = news.trends.findIndex(
         (t) => t.toString() === news._id.toString()
       );
       if (newsIndex !== -1) {
@@ -324,17 +324,17 @@ export default {
           .status(401)
           .json({ success: false, msg: "You already add this to trends" });
       }
-      const arrayLength = fetchedUser.trends.length;
+      const arrayLength = news.trends.length;
       if (arrayLength <= 4) {
-        fetchedUser.trends.push(news._id);
-        console.log("normal: ", fetchedUser.trends);
+        news.trends.push(news._id);
+        console.log("normal: ", news.trends);
       } else {
-        fetchedUser.trends.shift();
-        fetchedUser.trends.push(news._id);
-        console.log("after shifting: ", fetchedUser.trends);
+        news.trends.shift();
+        news.trends.push(news._id);
+        console.log("after shifting: ", news.trends);
       }
 
-      await fetchedUser.save();
+      await news.save();
       res.status(200).json({ success: true, msg: "Becomes a trend" });
     } catch (err) {
       console.log(err);
@@ -344,7 +344,7 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await User.find().select("trends").populate('trends');
+      const trends = await News.find().select("trends").populate('trends');
       res.status(200).json({ success: true, data: trends });
     } catch (err) {
       res.status(500).json({ success: false, msg: err });

@@ -80,6 +80,11 @@ const newsSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  trends: [{
+    type: ObjectId,
+    ref: 'News',
+    unique: true,
+  }]
 });
 
 export default mongoose.model("News", newsSchema);

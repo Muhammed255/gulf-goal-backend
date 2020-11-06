@@ -75,7 +75,6 @@ newsRoutes.post('/trend/:newsId', passport.authenticate("jwt", { session: false 
 
 newsRoutes.get(
   "/all-news",
-  passport.authenticate("jwt", { session: false }),
   newsController.allNews
 );
 
