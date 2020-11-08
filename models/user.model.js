@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-import bcrypt from "bcryptjs";
+import uniqueValidator from 'mongoose-unique-validator';
 
 const ObjectId = mongoose.Types.ObjectId;
 
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
   local: {
-    email: String,
+    email: {type: String, unique: true},
     username: String,
     password: String,
   },
@@ -25,7 +25,11 @@ var userSchema = new mongoose.Schema({
   },
   fav_news: [{
     type: ObjectId,
-    ref: 'User'
+    ref: 'News'
+  }],
+  fav_teams: [{
+    type: String,
+    default: []
   }],
   preferredLanguage: {
     type: String,
@@ -34,9 +38,7 @@ var userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.getTrends=function() {
-  return this.trends;
-}
+userSchema.plugin(uniqueValidator)
 
 // userSchema.pre("save", async function () {
 //   if (this.isModified("password") || this.isNew) {

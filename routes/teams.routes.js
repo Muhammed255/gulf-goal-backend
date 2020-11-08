@@ -4,4 +4,8 @@ import teamsController from "../controllers/teams.controller.js";
 
 export const teamsRoutes = express.Router();
 
-teamsRoutes.get("/all-teams", teamsController.getTeams);
+teamsRoutes.post(
+  "/add-teams-to-favorites",
+  passport.authenticate("jwt", { session: false }),
+  teamsController.addTeamsToFavorites
+);

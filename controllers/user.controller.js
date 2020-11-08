@@ -15,13 +15,17 @@ export default {
       const salt = await bcrypt.genSalt();
       const hash = await bcrypt.hash(password, salt);
 
+      const authUser = await User.findOne({'local.email': email});
+      if(authUser) {
+        return res.status(401).json({msg: "User with this email already exists !!", success: false})
+      }
+
       const user = await User.create({
         'local.username': username,
         'local.email': email,
         'local.password': hash,
         'local.preferredLanguage': preferredLanguage
       })
-      console.log('user: ' +user)
 
       const token = jwt.sign({ userId: user._id }, appConfig.securityCode, {
          expiresIn: "1d",
