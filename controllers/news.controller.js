@@ -344,8 +344,10 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await News.find().select("trends").populate('trends');
-      res.status(200).json(trends["trends"]);
+      const trends = await News.aggregate().select("trends").populate('trends');
+      trends.forEach(trend => {
+        res.status(200).json(trend.trends);
+      });
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
     }
