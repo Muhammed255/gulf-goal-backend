@@ -27,10 +27,7 @@ var userSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'News'
   }],
-  fav_teams: [{
-    type: String,
-    default: []
-  }],
+  fav_teams: [String],
   preferredLanguage: {
     type: String,
     enum: ["English", "Arabic", "Espanol", "hebrew"],
