@@ -78,7 +78,7 @@ newsRoutes.get(
   newsController.allNews
 );
 
-newsRoutes.get("/all-trends", passport.authenticate("jwt", { session: false }), newsController.getTrendingNews);
+newsRoutes.get("/all-trends", newsController.getTrendingNews);
 
 newsRoutes.put(
   "/add-to-favorites/:newsId",
@@ -95,7 +95,6 @@ newsRoutes.put(
 newsRoutes
   .route("/:newsId")
   .get(
-    passport.authenticate("jwt", { session: false }),
     newsController.findOneNews
   )
   .put(
