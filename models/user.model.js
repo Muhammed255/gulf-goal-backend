@@ -38,6 +38,14 @@ var userSchema = new mongoose.Schema({
     enum: ["English", "Arabic", "Espanol", "hebrew"],
     default: "English",
   },
+  image: {
+    type: String,
+    default: null
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 userSchema.plugin(uniqueValidator)

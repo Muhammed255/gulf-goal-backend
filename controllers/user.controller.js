@@ -7,11 +7,6 @@ export default {
   async signup(req, res, next) {
     try {
       const { username, email, password, preferredLanguage } = req.body;
-      // const newUser = new User();
-      // newUser.local.name = name;
-      // newUser.local.username = username;
-      // newUser.local.email = email;
-      // newUser.local.preferredLanguage = preferredLanguage;
       const salt = await bcrypt.genSalt();
       const hash = await bcrypt.hash(password, salt);
 
@@ -29,7 +24,7 @@ export default {
         "local.username": username,
         "local.email": email,
         "local.password": hash,
-        "local.preferredLanguage": preferredLanguage,
+        "preferredLanguage": preferredLanguage,
       });
 
       const token = jwt.sign({ userId: user._id }, appConfig.securityCode, {
@@ -64,7 +59,7 @@ export default {
         "local.username": username,
         "local.email": email,
         "local.password": hash,
-        "local.preferredLanguage": preferredLanguage,
+        "preferredLanguage": preferredLanguage,
         'role': 'admin'
       });
 
@@ -85,6 +80,26 @@ export default {
     const checkEmail = await User.findOne({ "local.email": email });
     if (!checkEmail) {
       return res.status(401).json({ msg: "Email is not registered !!" });
+    }
+    const matched = await bcrypt.compare(password, checkEmail.local.password);
+    if (!matched) {
+      return res.status(402).json({ msg: "password is incorrect !!" });
+    }
+    const token = jwt.sign({ userId: checkEmail._id }, appConfig.securityCode, {
+      expiresIn: "1d",
+    });
+    res.status(200).json({ success: true, userId: checkEmail._id, token, expiresIn: 84600 });
+  },
+
+  async admin_login(req, res, next) {
+    const { email, password } = req.body;
+    const checkEmail = await User.findOne({ "local.email": email });
+    if (!checkEmail) {
+      return res.status(401).json({ msg: "Email is not registered !!" });
+    }
+
+    if (checkEmail.role !== "admin") {
+      return res.status(401).json({ msg: "Email is not registered and Not Allowed !!" });
     }
     const matched = await bcrypt.compare(password, checkEmail.local.password);
     if (!matched) {
@@ -145,4 +160,19 @@ export default {
       res.status(500).json({ success: false, err });
     }
   },
+  
+  async findOneUser(req, res, next) {
+    try {
+      const user = await User.findOne({ _id: req.params.userId });
+      if (!user) {
+        return res.status(200).json({ success: false, msg: "No User found" });
+      }
+
+      res.status(200).json({success: true, user});
+
+    } catch (err) {
+      res.status(500).json({ success: false, err });
+    }
+  }
+
 };

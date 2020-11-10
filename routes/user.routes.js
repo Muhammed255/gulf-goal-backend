@@ -8,6 +8,8 @@ userRoutes.post("/signup", userController.signup);
 
 userRoutes.post("/login", userController.login);
 
+userRoutes.post("/admin-login", userController.admin_login);
+
 userRoutes.post("/admin-signup", userController.admin_signup)
 
 userRoutes.post(
@@ -42,6 +44,12 @@ userRoutes.get(
   "/all-users",
   passport.authenticate("jwt", { session: false }),
   userController.getAllUsers
+);
+
+userRoutes.get(
+  "/:userId",
+  passport.authenticate("jwt", { session: false }),
+  userController.deleteUser
 );
 
 userRoutes.delete(
