@@ -49,7 +49,7 @@ userRoutes.get(
 userRoutes.get(
   "/:userId",
   passport.authenticate("jwt", { session: false }),
-  userController.deleteUser
+  userController.findOneUser
 );
 
 userRoutes.delete(
