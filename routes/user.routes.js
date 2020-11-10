@@ -8,6 +8,8 @@ userRoutes.post("/signup", userController.signup);
 
 userRoutes.post("/login", userController.login);
 
+userRoutes.post("/admin-signup", userController.admin_signup)
+
 userRoutes.post(
   "/test",
   passport.authenticate("jwt", { session: false }),
@@ -25,10 +27,25 @@ userRoutes.get(
   userController.sendJWTToken
 );
 
-userRoutes.get("/facebook", passport.authenticate("facebook", {scope: ["email"]}));
+userRoutes.get(
+  "/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
 
 userRoutes.get(
   "/facebook/callback",
   passport.authenticate("facebook", { failureRedirect: "/failure" }),
   userController.sendFacebookJWTToken
+);
+
+userRoutes.get(
+  "/all-users",
+  passport.authenticate("jwt", { session: false }),
+  userController.getAllUsers
+);
+
+userRoutes.delete(
+  "/:userId",
+  passport.authenticate("jwt", { session: false }),
+  userController.deleteUser
 );

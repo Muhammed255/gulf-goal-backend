@@ -8,14 +8,15 @@ import User from "../models/user.model.js";
 export default {
   async addNews(req, res, next) {
     try {
-      const { title, content, teamId } = req.body;
+      const { title, content, teamId, tag } = req.body;
       const url = req.protocol + "://" + req.get("host");
       const news = new News({
         title,
         content,
         image: url + "/images/" + req.file.originalname,
         userId: req.userData._id,
-        teamId
+        teamId,
+        tag,
       });
       await news.save();
       res.status(200).json({ success: true, msg: "News created !!" });
@@ -39,7 +40,10 @@ export default {
 
   async allNews(req, res, next) {
     try {
-      const allNews = await News.find().sort({ created_at: -1 }).populate("comments.commentator")
+      const allNews = await News.find()
+        .sort({ created_at: -1 })
+        .populate("comments.commentator")
+        .populate("comments.replies.replier");
       res.status(200).json(allNews);
     } catch (err) {
       res.status(500).json(err);
@@ -48,7 +52,7 @@ export default {
 
   async updateNews(req, res, next) {
     try {
-      const { title, content, teamId } = req.body;
+      const { title, content, teamId, tag } = req.body;
       const url = req.protocol + "://" + req.get("host");
       const newsToUpdate = await News.findById(req.params.newsId);
       if (!newsToUpdate) {
@@ -64,7 +68,7 @@ export default {
 
       await News.findByIdAndUpdate(
         req.params.newsId,
-        { title, content, image: imagePath, teamId },
+        { title, content, image: imagePath, teamId, tag },
         { new: true }
       );
       res.status(200).json({ success: true, msg: "News Updated !!" });
@@ -196,7 +200,7 @@ export default {
           .json({ success: false, msg: "No comment provided" });
       }
 
-      const newsToComment = await News.findOne({ _id: req.body.newsId })
+      const newsToComment = await News.findOne({ _id: req.body.newsId });
       if (!newsToComment) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
@@ -344,7 +348,7 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await News.find().select("trends").populate('trends');
+      const trends = await News.find().select("trends").populate("trends");
       res.status(200).json(trends[0].trends);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });

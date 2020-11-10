@@ -10,7 +10,7 @@ export default {
       }
 
       // await User.findOneAndUpdate({_id: req.userData._id}, {$push: {teamsId: req.body.teamId}})
-      authUser.fav_teams.push({$each: [req.body.teamId]});
+      authUser.fav_teams.push(req.body.teamId);
 
       console.log(req.body.teamId)
 
