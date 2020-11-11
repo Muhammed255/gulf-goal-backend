@@ -1,3 +1,4 @@
+import Teams from "../models/teams.model.js";
 import User from "../models/user.model.js";
 
 export default {
@@ -9,19 +10,28 @@ export default {
         return res.status(401).json({ success: false, msg: "Unauthorized" });
       }
 
-      // await User.findOneAndUpdate({_id: req.userData._id}, {$push: {teamsId: req.body.teamId}})
-      authUser.fav_teams.push(req.body.teamId);
+      let teamsArray = {
+        teams: [
+          {
+            team_name: req.body.team_name,
+            team_key: req.body.team_key,
+            team_badge: req.body.team_badge,
+          },
+        ],
+        userId: req.userData._id,
+      };
 
-      console.log(req.body.teamId)
+      const teams = await Teams.create(teamsArray);
 
-      await authUser.save();
-      res
-        .status(200)
-        .json({
-          success: true,
-          msg: "teams added to favorites",
-          user: authUser,
-        });
+      // await Teams.update(
+      //   {},
+      //   {$push: {teams: {$each: teamsArray}}}
+      // )
+      res.status(200).json({
+        success: true,
+        msg: "teams added to favorites",
+        teams: teams,
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ err });

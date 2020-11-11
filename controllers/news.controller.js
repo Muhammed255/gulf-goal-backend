@@ -6,9 +6,10 @@ export default {
     try {
       const { title, content, teamId, tag } = req.body;
       // const url = req.protocol + "://" + req.get("host");
-      const authUser = await User.findOne({_id: req.userData._id});
+      const authUser = await User.findById(req.userData._id);
+      console.log(JSON.stringify(authUser))
       if(authUser.role === "user") {
-        return res.status(401).json({success: false, msg: "Not Allowed to create News"})
+        return res.status(401).json({success: false, msg: "Not Allowed to create News", auth: authUser.role})
       }
       const news = new News({
         title,
