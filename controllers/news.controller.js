@@ -32,7 +32,9 @@ export default {
       if (!news) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
-      res.status(200).json(news);
+      const filteredNews = await News.find({tag: news.tag}).limit(5);
+      
+      res.status(200).json({news, filteredNews});
     } catch (err) {
       res.status(500).json(err);
     }
