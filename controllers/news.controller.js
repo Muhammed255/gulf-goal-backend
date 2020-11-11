@@ -5,7 +5,7 @@ export default {
   async addNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      const url = req.protocol + "://" + req.get("host");
+      // const url = req.protocol + "://" + req.get("host");
       const authUser = await User.findOne({_id: req.userData._id});
       if(!authUser || authUser.role !== "admin") {
         return res.status(401).json({success: false, msg: "Not Allowed to create News"})
@@ -13,7 +13,7 @@ export default {
       const news = new News({
         title,
         content,
-        image: url + "/images/" + req.file.originalname,
+        image: "../images/" + req.file.originalname,
         userId: req.userData._id,
         teamId,
         tag,
@@ -33,7 +33,7 @@ export default {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
       const filteredNews = await News.find({tag: news.tag}).limit(5);
-      
+
       res.status(200).json({news, filteredNews});
     } catch (err) {
       res.status(500).json(err);
@@ -55,7 +55,7 @@ export default {
   async updateNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      const url = req.protocol + "://" + req.get("host");
+      // const url = req.protocol + "://" + req.get("host");
       const newsToUpdate = await News.findById(req.params.newsId);
       const authUser = await User.findOne({_id: req.userData._id});
 
@@ -71,7 +71,7 @@ export default {
       }
       let imagePath = req.body.image;
       if (req.file) {
-        imagePath = url + "/images/" + req.file.filename;
+        imagePath = "../images/" + req.file.filename;
       }
 
       await News.findByIdAndUpdate(

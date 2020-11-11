@@ -35,7 +35,7 @@ var userSchema = new mongoose.Schema({
   fav_teams: [{type: String, required: true}],
   preferredLanguage: {
     type: String,
-    enum: ["English", "Arabic", "Espanol", "hebrew"],
+    enum: ["English", "Arabic", "Espanol", "Indonis"],
     default: "English",
   },
   image: {
