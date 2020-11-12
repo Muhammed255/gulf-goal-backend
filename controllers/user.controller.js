@@ -60,7 +60,7 @@ export default {
         "local.email": email,
         "local.password": hash,
         "preferredLanguage": preferredLanguage,
-        'role': 'admin'
+        'role': "admin"
       });
 
       const token = jwt.sign({ userId: user._id }, appConfig.securityCode, {
@@ -76,7 +76,8 @@ export default {
   },
 
   async login(req, res, next) {
-    const { email, password } = req.body;
+    try{
+	const { email, password } = req.body;
     const checkEmail = await User.findOne({ "local.email": email });
     if (!checkEmail) {
       return res.status(401).json({ msg: "Email is not registered !!" });
@@ -89,6 +90,9 @@ export default {
       expiresIn: "1d",
     });
     res.status(200).json({ success: true, userId: checkEmail._id, token, expiresIn: 84600 });
+}catch(err) {
+res.status(500).json({success: false, msg: "Error: " + err})
+}
   },
 
   async admin_login(req, res, next) {
