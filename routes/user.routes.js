@@ -6,11 +6,15 @@ export const userRoutes = express.Router();
 
 userRoutes.post("/signup", userController.signup);
 
+userRoutes.post("/facebook-signup", userController.facebook_signup);
+
+userRoutes.post("/google-signup", userController.google_signup);
+
 userRoutes.post("/login", userController.login);
 
 userRoutes.post("/admin-login", userController.admin_login);
 
-userRoutes.post("/admin-signup", userController.admin_signup)
+userRoutes.post("/admin-signup", userController.admin_signup);
 
 userRoutes.post(
   "/test",

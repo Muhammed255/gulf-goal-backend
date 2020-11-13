@@ -13,13 +13,13 @@ var userSchema = new mongoose.Schema({
   },
   google: {
     email: String,
-    id: String,
+    userId: String,
     displayName: String,
     token: String
   },
   facebook: {
     email: String,
-    id: String,
+    userId: String,
     displayName: String,
     token: String
   },

@@ -39,6 +39,52 @@ export default {
     }
   },
 
+  async google_signup(req, res, next) {
+    try {
+      const { displayName, email, token, userId } = req.body;
+
+      const user = await User.create({
+        "google.displayName": username,
+        "google.email": email,
+        "google.token": token,
+        "google.userId": userId,
+      });
+
+      const token = jwt.sign({ userId: user._id }, appConfig.securityCode, {
+        expiresIn: "1d",
+      });
+      res
+        .status(200)
+        .json({ success: true, msg: "registered successfully ....", token });
+    } catch (err) {
+      console.log("Error: " + err);
+      return res.status(500).json({ err });
+    }
+  },
+
+  async facebook_signup(req, res, next) {
+    try {
+      const { displayName, email, token, userId } = req.body;
+
+      const user = await User.create({
+        "facebook.displayName": displayName,
+        "facebook.email": email,
+        "facebook.token": token,
+        "facebook.userId": userId,
+      });
+
+      const token = jwt.sign({ userId: user._id }, appConfig.securityCode, {
+        expiresIn: "1d",
+      });
+      res
+        .status(200)
+        .json({ success: true, msg: "registered successfully ....", token });
+    } catch (err) {
+      console.log("Error: " + err);
+      return res.status(500).json({ err });
+    }
+  },
+
   async admin_signup(req, res, next) {
     try {
       const { username, email, password, preferredLanguage } = req.body;
