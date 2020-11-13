@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "passport";
+import cors from 'cors';
 
 import User from "./models/user.model.js";
 import { userRoutes } from "./routes/user.routes.js";
@@ -38,7 +39,6 @@ mongoose
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(
   session({
     secret: appConfig.securityCode,
@@ -67,7 +67,8 @@ passport.deserializeUser((id, done) => {
 });
 
 //Setup CORS
-app.use((req, res, next) => {
+app.use(cors());
+/*app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
 
   res.header(
@@ -81,7 +82,7 @@ app.use((req, res, next) => {
   );
 
   next();
-});
+});*/
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
