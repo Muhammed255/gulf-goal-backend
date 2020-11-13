@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import tagController from "../controllers/tag.controller";
+import tagController from "../controllers/tag.controller.js";
 
 export const tagRoutes = express.Router();
 
