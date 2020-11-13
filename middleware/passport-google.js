@@ -7,7 +7,9 @@ export const PassportGoogle = () => {
   passport.use(
     new GoogleStrategy.OAuth2Strategy(
       {
-        clientID: appConfig.google.clientId
+        clientID: appConfig.google.clientId,
+        clientSecret: appConfig.google.clientSecret,
+        callbackURL: appConfig.google.redirectUrl
       },
       async (accessToken, refreshToken, profile, done) => {
         try {

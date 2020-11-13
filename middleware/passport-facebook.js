@@ -9,6 +9,7 @@ export const FacebookPassport = () => {
       {
         clientID: appConfig.facebook.appId,
         clientSecret: appConfig.facebook.appSecret,
+        callbackURL: appConfig.facebook.redirectUrl,
         enableProof: true,
         profileFields: ["id", "name", "emails"],
       },

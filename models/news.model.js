@@ -40,7 +40,8 @@ const newsSchema = new mongoose.Schema({
     required: true,
   },
   tag: {
-    type: String,
+    type: ObjectId,
+    ref: "Tag",
     required: true
   },
   comments: [

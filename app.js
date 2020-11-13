@@ -1,5 +1,5 @@
 import path from "path";
-import { dirname } from 'path';
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 import express from "express";
 import mongoose from "mongoose";
@@ -7,14 +7,15 @@ import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "passport";
 
+import User from "./models/user.model.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { appConfig } from "./middleware/app-config.js";
 import { jwtConfig } from "./middleware/passport-jwt.js";
 import { PassportGoogle } from "./middleware/passport-google.js";
-import User from "./models/user.model.js";
 import { FacebookPassport } from "./middleware/passport-facebook.js";
 import { newsRoutes } from "./routes/news.routes.js";
 import { teamsRoutes } from "./routes/teams.routes.js";
+import { tagsRoutes } from "./routes/tage.routes.js";
 
 const app = express();
 const port = appConfig.port;
@@ -65,19 +66,18 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-
 //Setup CORS
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header("Access-Control-Allow-Origin", "*");
 
   res.header(
-      'Access-Control-Allow-Methods',
-      'GET,PUT,POST,DELETE,OPTIONS, PATCH'
+    "Access-Control-Allow-Methods",
+    "GET,PUT,POST,DELETE,OPTIONS, PATCH"
   );
 
   res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
 
   next();
@@ -89,6 +89,8 @@ app.use("/api/users", userRoutes);
 
 app.use("/api/news", newsRoutes);
 
-app.use('/api/teams', teamsRoutes)
+app.use("/api/teams", teamsRoutes);
+
+app.use("/api/tags", tagsRoutes);
 
 app.listen(port, () => console.log(`Gulf Goal app listening on port ${port}`));
