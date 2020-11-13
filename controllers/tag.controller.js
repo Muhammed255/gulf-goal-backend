@@ -3,9 +3,8 @@ import Tag from "../models/tag.model.js";
 export default {
   async addNewTag(req, res, next) {
     try {
-      const { tag } = req.body;
       const newTag = new Tag();
-      newTag.tag = tag;
+      newTag.tag = req.body.tag;
       newTag.userId = req.userData._id
 
       await newTag.save();
