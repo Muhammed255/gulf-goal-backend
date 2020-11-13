@@ -2,17 +2,17 @@ import { Router } from "express";
 import passport from "passport";
 import tagController from "../controllers/tag.controller";
 
-export const tagsRoutes = Router();
+export const tagRoutes = Router();
 
-tagsRoutes.post(
+tagRoutes.post(
   "/add-tag",
   passport.authenticate("jwt", { session: false }),
   tagController.addNewTag
 );
 
-tagsRoutes.get("all-tags", tagController.getAllTags);
+tagRoutes.get("all-tags", tagController.getAllTags);
 
-tagsRoutes
+tagRoutes
   .route("/:tagId")
   .get(
     passport.authenticate("jwt", { session: false }),

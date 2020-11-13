@@ -15,7 +15,7 @@ import { PassportGoogle } from "./middleware/passport-google.js";
 import { FacebookPassport } from "./middleware/passport-facebook.js";
 import { newsRoutes } from "./routes/news.routes.js";
 import { teamsRoutes } from "./routes/teams.routes.js";
-import { tagsRoutes } from "./routes/tage.routes.js";
+import { tagRoutes } from "./routes/tag.routes.js";
 
 const app = express();
 const port = appConfig.port;
@@ -91,6 +91,6 @@ app.use("/api/news", newsRoutes);
 
 app.use("/api/teams", teamsRoutes);
 
-app.use("/api/tags", tagsRoutes);
+app.use("/api/tags", tagRoutes);
 
 app.listen(port, () => console.log(`Gulf Goal app listening on port ${port}`));
