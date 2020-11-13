@@ -1,8 +1,8 @@
-import { Router } from "express";
+import express from "express";
 import passport from "passport";
 import tagController from "../controllers/tag.controller";
 
-export const tagRoutes = Router();
+export const tagRoutes = express.Router();
 
 tagRoutes.post(
   "/add-tag",
