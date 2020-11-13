@@ -6,6 +6,7 @@ export default {
       const { tag } = req.body;
       const newTag = new Tag();
       newTag.tag = tag;
+      newTag.userId = req.userData._id
 
       await newTag.save();
       res.status(200).json({ success: true, msg: "Tag created successfully!" });
