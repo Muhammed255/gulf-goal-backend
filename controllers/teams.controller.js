@@ -11,13 +11,11 @@ export default {
       }
 
       let teamsArray = {
-        teams: [
-          {
-            team_name: req.body.team_name,
-            team_key: req.body.team_key,
-            team_badge: req.body.team_badge,
-          },
-        ],
+        teams: {
+          team_name: req.body.team_name,
+          team_key: req.body.team_key,
+          team_badge: req.body.team_badge,
+        },
         userId: req.userData._id,
       };
 

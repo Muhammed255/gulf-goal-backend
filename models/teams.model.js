@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 var teamSchema = new mongoose.Schema({
-    teams: [{
+    teams:{
         team_name:{
             type:String,
             required:true
@@ -14,7 +14,7 @@ var teamSchema = new mongoose.Schema({
             type:String,
             required:true
         },
-    }],
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
