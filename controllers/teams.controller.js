@@ -16,7 +16,7 @@ export default {
           team_badge: req.body.team_badge,
         }
 
-      await Teams.findOneAndUpdate(
+      let teams = await User.findOneAndUpdate(
         {_id: req.userData._id},
         {$push: {fav_teams: teamsArray}},
         {safe: true, upsert: true, new : true},
