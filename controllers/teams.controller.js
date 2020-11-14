@@ -37,7 +37,7 @@ export default {
       const favorites = await User.find().select(
         "fav_teams"
       );
-      res.status(200).json(favorite[0].fav_teams);
+      res.status(200).json(favorites[0].fav_teams);
     } catch (err) {
       res.status(500).json(err);
     }
