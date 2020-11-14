@@ -11,7 +11,7 @@ teamsRoutes.post(
 );
 
 teamsRoutes.get(
-  "all-favorites",
+  "/all-favorites",
   passport.authenticate("jwt", { session: false }),
   teamsController.getFavorites
 );
