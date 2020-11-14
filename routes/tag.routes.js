@@ -10,7 +10,7 @@ tagRoutes.post(
   tagController.addNewTag
 );
 
-tagRoutes.get("all-tags", tagController.getAllTags);
+tagRoutes.get("/all-tags", tagController.getAllTags);
 
 tagRoutes
   .route("/:tagId")
