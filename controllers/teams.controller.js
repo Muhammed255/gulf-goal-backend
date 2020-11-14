@@ -38,10 +38,14 @@ export default {
 
   async getFavorites(req, res, next) {
     try {
-      const favorites = await Teams.find({ userId: req.userData._id }).select(
+      let fav;
+      const favorites = await Teams.find().select(
         "teams"
       );
-      res.status(200).json(favorites[0].teams);
+      // favorites.forEach(favorite => {
+      //   fav = favorite.teams
+      // });
+      res.status(200).json(fav);
     } catch (err) {
       res.status(500).json(err);
     }
