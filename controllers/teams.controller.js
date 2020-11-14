@@ -15,7 +15,15 @@ export default {
           team_key: req.body.team_key,
           team_badge: req.body.team_badge,
         }
-
+        let temp = false;
+        authUser.fav_teams.forEach(team => {
+          if(team.team_key === teamsArray.team_key) {
+            temp = true;
+          }
+        });
+        if(temp) {
+          res.status(401).json({msg: "You already make this team as favorite 🤦‍♂️🤷‍♀️"})
+        }
       let teams = await User.findOneAndUpdate(
         {_id: req.userData._id},
         {$push: {fav_teams: teamsArray}},

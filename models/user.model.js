@@ -43,6 +43,7 @@ var userSchema = new mongoose.Schema({
       team_key: {
         type: String,
         required: true,
+        unique: true
       },
       team_badge: {
         type: String,
