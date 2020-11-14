@@ -42,10 +42,10 @@ export default {
       const favorites = await Teams.find().select(
         "teams"
       );
-      // favorites.forEach(favorite => {
-      //   fav = favorite.teams
-      // });
-      res.status(200).json(favorites);
+      favorites.forEach(favorite => {
+        fav = favorite.teams
+      });
+      res.status(200).json(fav);
     } catch (err) {
       res.status(500).json(err);
     }
