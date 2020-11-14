@@ -11,20 +11,16 @@ export default {
       }
 
       let teamsArray = {
-        teams: {
           team_name: req.body.team_name,
           team_key: req.body.team_key,
           team_badge: req.body.team_badge,
-        },
-        userId: req.userData._id,
-      };
+        }
 
-      const teams = await Teams.create(teamsArray);
-
-      // await Teams.update(
-      //   {},
-      //   {$push: {teams: {$each: teamsArray}}}
-      // )
+      await Teams.findOneAndUpdate(
+        {_id: req.userData._id},
+        {$push: {fav_teams: {$each: teamsArray}}},
+        {safe: true, upsert: true, new : true},
+      )
       res.status(200).json({
         success: true,
         msg: "teams added to favorites",
@@ -38,13 +34,10 @@ export default {
 
   async getFavorites(req, res, next) {
     try {
-      let fav;
-      const favorites = await Teams.find().select(
-        "teams"
+      const favorites = await User.find().select(
+        "fav_teams"
       );
-      favorites.forEach(favorite => {
-        res.status(200).json(favorite.teams);
-      });
+      res.status(200).json(favorite[0].fav_teams);
     } catch (err) {
       res.status(500).json(err);
     }

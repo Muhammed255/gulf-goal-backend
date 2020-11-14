@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-import uniqueValidator from 'mongoose-unique-validator';
+import uniqueValidator from "mongoose-unique-validator";
 
 const ObjectId = mongoose.Types.ObjectId;
 
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
   local: {
-    email: {type: String, unique: true},
+    email: { type: String, unique: true },
     username: String,
     password: String,
   },
@@ -15,24 +15,41 @@ var userSchema = new mongoose.Schema({
     email: String,
     userId: String,
     displayName: String,
-    token: String
+    token: String,
   },
   facebook: {
     email: String,
     userId: String,
     displayName: String,
-    token: String
+    token: String,
   },
-  fav_news: [{
-    type: ObjectId,
-    ref: 'News'
-  }],
+  fav_news: [
+    {
+      type: ObjectId,
+      ref: "News",
+    },
+  ],
   role: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
+    enum: ["user", "admin"],
+    default: "user",
   },
-  fav_teams: [{type: String, required: true}],
+  fav_teams: [
+    {
+      team_name: {
+        type: String,
+        required: true,
+      },
+      team_key: {
+        type: String,
+        required: true,
+      },
+      team_badge: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   preferredLanguage: {
     type: String,
     enum: ["English", "Arabic", "Espanol", "Indonis"],
@@ -40,15 +57,15 @@ var userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: null
+    default: null,
   },
   created_at: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-userSchema.plugin(uniqueValidator)
+userSchema.plugin(uniqueValidator);
 
 // userSchema.pre("save", async function () {
 //   if (this.isModified("password") || this.isNew) {
