@@ -35,4 +35,15 @@ export default {
       return res.status(500).json({ err });
     }
   },
+
+  async getFavorites(req, res, next) {
+    try {
+      const favorites = await Teams.find({ userId: req.userData._id }).select(
+        "teams"
+      );
+      res.status(200).json(favorites[0].teams);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 };

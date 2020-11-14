@@ -9,3 +9,9 @@ teamsRoutes.post(
   passport.authenticate("jwt", { session: false }),
   teamsController.addTeamsToFavorites
 );
+
+teamsRoutes.get(
+  "all-favorites",
+  passport.authenticate("jwt", { session: false }),
+  teamsController.getFavorites
+);
