@@ -18,7 +18,7 @@ export default {
 
       await Teams.findOneAndUpdate(
         {_id: req.userData._id},
-        {$push: {fav_teams: {$each: teamsArray}}},
+        {$push: {fav_teams: teamsArray}},
         {safe: true, upsert: true, new : true},
       )
       res.status(200).json({
