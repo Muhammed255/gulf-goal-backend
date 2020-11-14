@@ -45,7 +45,7 @@ export default {
       // favorites.forEach(favorite => {
       //   fav = favorite.teams
       // });
-      res.status(200).json(fav);
+      res.status(200).json(favorites);
     } catch (err) {
       res.status(500).json(err);
     }
