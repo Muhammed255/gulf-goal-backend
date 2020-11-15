@@ -23,33 +23,33 @@ userRoutes.post("/check-token", userController.validatePassToken);
 
 userRoutes.post("/new-password/:resetToken", userController.newPassword)
 
-userRoutes.post(
-  "/test",
-  checkAuth,
-  userController.test
-);
+// userRoutes.post(
+//   "/test",
+//   checkAuth,
+//   userController.test
+// );
 
-userRoutes.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+// userRoutes.get(
+//   "/google",
+//   passport.authenticate("google", { scope: ["profile", "email"] })
+// );
 
-userRoutes.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/failure" }),
-  userController.sendJWTToken
-);
+// userRoutes.get(
+//   "/google/callback",
+//   passport.authenticate("google", { failureRedirect: "/failure" }),
+//   userController.sendJWTToken
+// );
 
-userRoutes.get(
-  "/facebook",
-  passport.authenticate("facebook", { scope: ["email"] })
-);
+// userRoutes.get(
+//   "/facebook",
+//   passport.authenticate("facebook", { scope: ["email"] })
+// );
 
-userRoutes.get(
-  "/facebook/callback",
-  passport.authenticate("facebook", { failureRedirect: "/failure" }),
-  userController.sendFacebookJWTToken
-);
+// userRoutes.get(
+//   "/facebook/callback",
+//   passport.authenticate("facebook", { failureRedirect: "/failure" }),
+//   userController.sendFacebookJWTToken
+// );
 
 userRoutes.get(
   "/all-users",

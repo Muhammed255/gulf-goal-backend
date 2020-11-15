@@ -47,24 +47,24 @@ app.use(
   })
 );
 
-app.use(passport.initialize({ userProperty: "userData" }));
-app.use(passport.session());
-jwtConfig();
-PassportGoogle();
-FacebookPassport();
-// Save user into session
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// app.use(passport.initialize({ userProperty: "userData" }));
+// app.use(passport.session());
+// jwtConfig();
+// PassportGoogle();
+// FacebookPassport();
+// // Save user into session
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    if (err) {
-      return done(err, null);
-    }
-    return done(null, user);
-  });
-});
+// passport.deserializeUser((id, done) => {
+//   User.findById(id, (err, user) => {
+//     if (err) {
+//       return done(err, null);
+//     }
+//     return done(null, user);
+//   });
+// });
 
 //Setup CORS
 app.use(cors());
