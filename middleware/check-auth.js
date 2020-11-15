@@ -11,6 +11,6 @@ export function checkAuth(req, res, next) {
     };
     next();
   } catch (e) {
-    res.status(401).json({ message: "Auth failed" });
+    res.status(401).json({ success: false, msg: "Auth failed" });
   }
 }
