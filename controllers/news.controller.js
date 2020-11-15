@@ -6,8 +6,7 @@ export default {
     try {
       const { title, content, teamId, tag } = req.body;
       // const url = req.protocol + "://" + req.get("host");
-      const authUser = await User.findById(req.userData._id);
-      console.log(JSON.stringify(authUser))
+      const authUser = await User.findById(req.userData.userId);
       if(authUser.role === "user") {
         return res.status(401).json({success: false, msg: "Not Allowed to create News", auth: authUser.role})
       }
@@ -15,7 +14,7 @@ export default {
         title,
         content,
         image: "../images/" + req.file.originalname,
-        userId: req.userData._id,
+        userId: req.userData.userId,
         teamId,
         tag,
       });
@@ -58,12 +57,12 @@ export default {
       const { title, content, teamId, tag } = req.body;
       // const url = req.protocol + "://" + req.get("host");
       const newsToUpdate = await News.findById(req.params.newsId);
-      const authUser = await User.findOne({_id: req.userData._id});
+      const authUser = await User.findOne({_id: req.userData.userId});
 
       if (!newsToUpdate) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
-      if (newsToUpdate.userId.toString() !== req.userData._id.toString()) {
+      if (newsToUpdate.userId.toString() !== req.userData.userId.toString()) {
         return res.status(401).json({ success: false, msg: "Unauthorized.." });
       }
 
@@ -89,14 +88,14 @@ export default {
   async deleteNews(req, res, next) {
     try {
       const newsToDelete = await News.findById(req.params.newsId);
-      const authUser = await User.findOne({_id: req.userData._id});
+      const authUser = await User.findOne({_id: req.userData.userId});
       if(!authUser || authUser.role !== "admin") {
         return res.status(401).json({success: false, msg: "Not Allowed to create News"})
       }
       if (!newsToDelete) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
-      if (newsToDelete.userId.toString() !== req.userData._id.toString()) {
+      if (newsToDelete.userId.toString() !== req.userData.userId.toString()) {
         return res.status(401).send({ success: false, msg: "Unauthorized.." });
       }
 
@@ -118,7 +117,7 @@ export default {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
 
-      const authUser = await User.findOne({ _id: req.userData._id });
+      const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
         res.status(401).json({ success: false, msg: "Unautherized..." });
       }
@@ -165,7 +164,7 @@ export default {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
 
-      const authUser = await User.findOne({ _id: req.userData._id });
+      const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
         res.status(401).json({ success: false, msg: "Unautherized..." });
       }
@@ -218,14 +217,14 @@ export default {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
 
-      const authUser = await User.findOne({ _id: req.userData._id });
+      const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
         res.status(401).json({ success: false, msg: "Unautherized..." });
       }
 
       newsToComment.comments.push({
         comment: req.body.comment,
-        commentator: req.userData._id,
+        commentator: req.userData.userId,
       });
 
       await newsToComment.save();
@@ -253,7 +252,7 @@ export default {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
 
-      const authUser = await User.findOne({ _id: req.userData._id });
+      const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
         res.status(401).json({ success: false, msg: "Unautherized..." });
       }
@@ -261,7 +260,7 @@ export default {
       const replyData = {
         "comments.$.replies": {
           reply: req.body.reply,
-          replier: req.userData._id,
+          replier: req.userData.userId,
         },
       };
 
@@ -279,7 +278,7 @@ export default {
 
   async addNewsToFavorite(req, res, next) {
     try {
-      const fetchedUser = await User.findOne({ _id: req.userData._id });
+      const fetchedUser = await User.findOne({ _id: req.userData.userId });
       if (!fetchedUser) {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
@@ -298,7 +297,7 @@ export default {
 
   async removeNewsFromFavorites(req, res, next) {
     try {
-      const fetchedUser = await User.findOne({ _id: req.userData._id });
+      const fetchedUser = await User.findOne({ _id: req.userData.userId });
       if (!fetchedUser) {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
@@ -329,7 +328,7 @@ export default {
       if (!news) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
-      const fetchedUser = await User.findOne({ _id: req.userData._id });
+      const fetchedUser = await User.findOne({ _id: req.userData.userId });
       if (!fetchedUser) {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }

@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
-import session from "express-session";
+// import session from "express-session";
 // import passport from "passport";
 import cors from 'cors';
 
@@ -38,14 +38,14 @@ mongoose
   });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-  session({
-    secret: appConfig.securityCode,
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(
+//   session({
+//     secret: appConfig.securityCode,
+//     resave: true,
+//     saveUninitialized: true,
+//   })
+// );
 
 // app.use(passport.initialize({ userProperty: "userData" }));
 // app.use(passport.session());

@@ -23,11 +23,11 @@ userRoutes.post("/check-token", userController.validatePassToken);
 
 userRoutes.post("/new-password/:resetToken", userController.newPassword)
 
-// userRoutes.post(
-//   "/test",
-//   checkAuth,
-//   userController.test
-// );
+userRoutes.post(
+  "/test",
+  checkAuth,
+  userController.test
+);
 
 // userRoutes.get(
 //   "/google",

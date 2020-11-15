@@ -5,7 +5,7 @@ export default {
     try {
       const newTag = new Tag();
       newTag.tag = req.body.tag;
-      newTag.userId = req.userData._id
+      newTag.userId = req.userData.userId
 
       await newTag.save();
       res.status(200).json({ success: true, msg: "Tag created successfully!", tag: newTag });
@@ -48,7 +48,7 @@ export default {
       }
 
       await Tag.findOneAndUpdate(
-        { _id: tagToUpdate._id, userId: req.userData._id },
+        { _id: tagToUpdate._id, userId: req.userData.userId },
         { tag },
         { new: true }
       );
@@ -69,7 +69,7 @@ export default {
 
       await Tag.findOneAndDelete({
         _id: tagToDelete._id,
-        userId: req.userData._id,
+        userId: req.userData.userId,
       });
       res.status(200).json({success: true, msg: "deleted"})
     } catch (err) {

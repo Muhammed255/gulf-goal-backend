@@ -30,7 +30,7 @@ export default {
       await user.save();
 
       const token = jwt.sign(
-        { userId: user._id, email: user.local.email },
+        { userId: user._id, email: checkEmail.local.email, username: checkEmail.local.username },
         appConfig.securityCode,
         {
           expiresIn: "360d",
@@ -50,7 +50,7 @@ export default {
       const { displayName, email, token, userId } = req.body;
 
       const user = await User.create({
-        "google.displayName": username,
+        "google.displayName": displayName,
         "google.email": email,
         "google.token": token,
         "google.userId": userId,
@@ -106,8 +106,8 @@ export default {
         role: "admin",
       });
 
-      const token = jwt.sign({ userId: user._id }, appConfig.securityCode, {
-        expiresIn: "1d",
+      const token = jwt.sign({ userId: user._id, email: checkEmail.local.email, username: checkEmail.local.username }, appConfig.securityCode, {
+        expiresIn: "360d",
       });
       res
         .status(200)
@@ -134,7 +134,7 @@ export default {
           .json({ success: false, msg: "password is incorrect !!" });
       }
       const token = jwt.sign(
-        { userId: checkEmail._id, email: checkEmail.email },
+        { userId: checkEmail._id, email: checkEmail.local.email, username: checkEmail.local.username },
         appConfig.securityCode,
         {expiresIn: "360d"}
       );
@@ -167,10 +167,10 @@ export default {
         return res.status(402).json({ msg: "password is incorrect !!" });
       }
       const token = jwt.sign(
-        { userId: checkEmail._id },
+        { userId: checkEmail._id, email: checkEmail.local.email, username: checkEmail.local.username },
         appConfig.securityCode,
         {
-          expiresIn: "1d",
+          expiresIn: "360d",
         }
       );
       res.status(200).json({
@@ -189,26 +189,26 @@ export default {
     return res.json(req.userData);
   },
 
-  sendJWTToken(req, res, next) {
-    const token = jwt.sign(
-      { userId: req.userData._id },
-      appConfig.securityCode,
-      {
-        expiresIn: "1d",
-      }
-    );
-    res.status(200).json({ success: true, user: req.userData, token });
-  },
-  sendFacebookJWTToken(req, res, next) {
-    const token = jwt.sign(
-      { userId: req.userData._id },
-      appConfig.securityCode,
-      {
-        expiresIn: "1d",
-      }
-    );
-    res.status(200).json({ success: true, user: req.userData, token });
-  },
+  // sendJWTToken(req, res, next) {
+  //   const token = jwt.sign(
+  //     { userId: req.userData.userId },
+  //     appConfig.securityCode,
+  //     {
+  //       expiresIn: "1d",
+  //     }
+  //   );
+  //   res.status(200).json({ success: true, user: req.userData, token });
+  // },
+  // sendFacebookJWTToken(req, res, next) {
+  //   const token = jwt.sign(
+  //     { userId: req.userData.userId },
+  //     appConfig.securityCode,
+  //     {
+  //       expiresIn: "1d",
+  //     }
+  //   );
+  //   res.status(200).json({ success: true, user: req.userData, token });
+  // },
 
   async getAllUsers(req, res, next) {
     try {

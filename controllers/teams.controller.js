@@ -1,10 +1,10 @@
-import Teams from "../models/teams.model.js";
+
 import User from "../models/user.model.js";
 
 export default {
   async addTeamsToFavorites(req, res, next) {
     try {
-      const authUser = await User.findOne({ _id: req.userData._id });
+      const authUser = await User.findOne({ _id: req.userData.userId });
 
       if (!authUser) {
         return res.status(401).json({ success: false, msg: "Unauthorized" });
@@ -16,18 +16,16 @@ export default {
         team_badge: req.body.team_badge,
       };
       let temp = false;
-      authUser.fav_teams.forEach((team) => {
-        if (team.team_key === teamsArray.team_key) {
-          temp = true;
-        }
-      });
-      if (temp) {
-        res
+      const teamIndex = authUser.fav_teams.findIndex(
+        (t) => t.team_key === req.body.team_name
+      );
+      if (teamIndex !== -1) {
+        return res
           .status(401)
-          .json({ msg: "You already make this team as favorite 🤦‍♂️🤷‍♀️" });
+          .json({ success: false, msg: "You already add this teams to favorites 🤦‍♂️🤷‍♀️" });
       }
       let teams = await User.findOneAndUpdate(
-        { _id: req.userData._id },
+        { _id: req.userData.userId },
         { $push: { fav_teams: teamsArray } },
         { safe: true, upsert: true, new: true }
       );
@@ -53,14 +51,14 @@ export default {
 
   async removeFromFavorites(req, res, next) {
     try {
-      const authUser = await User.findOne({ _id: req.userData._id });
+      const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
         return res
           .status(409)
           .json({ success: false, msg: "Not authorized!!" });
       }
       let teams = await User.findOneAndUpdate(
-        { _id: req.userData._id },
+        { _id: req.userData.userId },
         { $pull: { fav_teams: { $elemMatch: { _id: req.body.teamId } } } },
         { safe: true, upsert: true, new: true }
       );

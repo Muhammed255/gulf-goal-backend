@@ -3,13 +3,15 @@ import { appConfig } from "./app-config.js";
 
 export function checkAuth(req, res, next) {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.verify(token, appConfig.JWT_SECRET);
-    req.userData = {
-      email: decodedToken.email,
-      userId: decodedToken.userId
-    };
-    next();
+    if (req.headers && req.headers.authorization) {
+      const token = req.headers.authorization;
+      if (!token) {
+        res.status(500).json({ success: false, msg: "please provide token" });
+      }
+      const decodedToken = jwt.verify(token, appConfig.securityCode);
+      req.userData = decodedToken;
+      next();
+    }
   } catch (e) {
     res.status(401).json({ success: false, msg: "Auth failed" });
   }
