@@ -40,7 +40,7 @@ export default {
         .json({ success: true, msg: "registered successfully ....", token });
     } catch (err) {
       console.log("Error: " + err);
-      return res.status(500).json({ err });
+      return res.status(500).json({ success: false, msg: err });
     }
   },
 
