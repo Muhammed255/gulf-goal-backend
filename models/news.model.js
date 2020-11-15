@@ -42,7 +42,7 @@ const newsSchema = new mongoose.Schema({
   tag: {
     type: ObjectId,
     ref: "Tag",
-    required: true
+    required: true,
   },
   comments: [
     {
@@ -79,17 +79,19 @@ const newsSchema = new mongoose.Schema({
     default: 0,
   },
   teamId: {
-    type:String
+    type: String,
   },
-  trends: [{
-    type: ObjectId,
-    ref: 'News',
-    unique: true,
-  }],
+  trends: [
+    {
+      type: ObjectId,
+      ref: "News",
+      unique: true,
+    },
+  ],
   created_at: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
 
 export default mongoose.model("News", newsSchema);

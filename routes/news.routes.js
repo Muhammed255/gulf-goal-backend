@@ -48,36 +48,17 @@ newsRoutes.post(
   newsController.addNews
 );
 
-newsRoutes.post(
-  "/add-comment",
-  checkAuth,
-  newsController.commentNews
-);
+newsRoutes.post("/add-comment", checkAuth, newsController.commentNews);
 
-newsRoutes.post(
-  "/do-reply",
-  checkAuth,
-  newsController.newsCommentReply
-);
+newsRoutes.post("/do-reply", checkAuth, newsController.newsCommentReply);
 
-newsRoutes.post(
-  "/like-news",
-  checkAuth,
-  newsController.likeNew
-);
+newsRoutes.post("/like-news", checkAuth, newsController.likeNew);
 
-newsRoutes.post(
-  "/dislike-news",
-  checkAuth,
-  newsController.dislikeNew
-);
+newsRoutes.post("/dislike-news", checkAuth, newsController.dislikeNew);
 
-newsRoutes.post('/trend/:newsId', checkAuth, newsController.makeNewsTrend);
+newsRoutes.post("/trend/:newsId", checkAuth, newsController.makeNewsTrend);
 
-newsRoutes.get(
-  "/all-news",
-  newsController.allNews
-);
+newsRoutes.get("/all-news", newsController.allNews);
 
 newsRoutes.get("/all-trends", newsController.getTrendingNews);
 
@@ -95,15 +76,10 @@ newsRoutes.put(
 
 newsRoutes
   .route("/:newsId")
-  .get(
-    newsController.findOneNews
-  )
+  .get(newsController.findOneNews)
   .put(
     checkAuth,
     multer({ storage, fileFilter }).single("image"),
     newsController.updateNews
   )
-  .delete(
-    checkAuth,
-    newsController.deleteNews
-  );
+  .delete(checkAuth, newsController.deleteNews);

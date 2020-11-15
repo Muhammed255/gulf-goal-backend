@@ -22,7 +22,7 @@ export const FacebookPassport = () => {
           const newUser = new User();
           newUser.facebook.id = profile.id;
           newUser.facebook.displayName =
-            profile.name.givenName + ' ' + profile.name.familyName;
+            profile.name.givenName + " " + profile.name.familyName;
           newUser.facebook.token = accessToken;
           newUser.facebook.email = profile.emails[0].value;
 

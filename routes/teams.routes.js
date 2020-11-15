@@ -17,8 +17,6 @@ teamsRoutes.post(
   teamsController.removeFromFavorites
 );
 
-teamsRoutes.get(
-  "/all-favorites",
-  checkAuth,
-  teamsController.getFavorites
-);
+teamsRoutes.get("/all-favorites", checkAuth, teamsController.getFavorites);
+
+teamsRoutes.get("/live-matches", checkAuth, teamsController.getLiveMatches);

@@ -30,7 +30,11 @@ export default {
       await user.save();
 
       const token = jwt.sign(
-        { userId: user._id, email: checkEmail.local.email, username: checkEmail.local.username },
+        {
+          userId: user._id,
+          email: checkEmail.local.email,
+          username: checkEmail.local.username,
+        },
         appConfig.securityCode,
         {
           expiresIn: "360d",
@@ -106,9 +110,17 @@ export default {
         role: "admin",
       });
 
-      const token = jwt.sign({ userId: user._id, email: checkEmail.local.email, username: checkEmail.local.username }, appConfig.securityCode, {
-        expiresIn: "360d",
-      });
+      const token = jwt.sign(
+        {
+          userId: user._id,
+          email: checkEmail.local.email,
+          username: checkEmail.local.username,
+        },
+        appConfig.securityCode,
+        {
+          expiresIn: "360d",
+        }
+      );
       res
         .status(200)
         .json({ success: true, msg: "registered successfully ....", token });
@@ -134,15 +146,19 @@ export default {
           .json({ success: false, msg: "password is incorrect !!" });
       }
       const token = jwt.sign(
-        { userId: checkEmail._id, email: checkEmail.local.email, username: checkEmail.local.username },
+        {
+          userId: checkEmail._id,
+          email: checkEmail.local.email,
+          username: checkEmail.local.username,
+        },
         appConfig.securityCode,
-        {expiresIn: "360d"}
+        { expiresIn: "360d" }
       );
       res.status(200).json({
         msg: "LoggedIn successfully !",
         success: true,
         userId: checkEmail._id,
-        token
+        token,
       });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Error: " + err });
@@ -167,7 +183,11 @@ export default {
         return res.status(402).json({ msg: "password is incorrect !!" });
       }
       const token = jwt.sign(
-        { userId: checkEmail._id, email: checkEmail.local.email, username: checkEmail.local.username },
+        {
+          userId: checkEmail._id,
+          email: checkEmail.local.email,
+          username: checkEmail.local.username,
+        },
         appConfig.securityCode,
         {
           expiresIn: "360d",

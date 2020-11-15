@@ -5,10 +5,12 @@ export default {
     try {
       const newTag = new Tag();
       newTag.tag = req.body.tag;
-      newTag.userId = req.userData.userId
+      newTag.userId = req.userData.userId;
 
       await newTag.save();
-      res.status(200).json({ success: true, msg: "Tag created successfully!", tag: newTag });
+      res
+        .status(200)
+        .json({ success: true, msg: "Tag created successfully!", tag: newTag });
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
     }
@@ -71,9 +73,9 @@ export default {
         _id: tagToDelete._id,
         userId: req.userData.userId,
       });
-      res.status(200).json({success: true, msg: "deleted"})
+      res.status(200).json({ success: true, msg: "deleted" });
     } catch (err) {
-        res.status(500).json({success: false, msg: err})
+      res.status(500).json({ success: false, msg: err });
     }
   },
 };

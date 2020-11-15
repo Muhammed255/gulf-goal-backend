@@ -21,13 +21,9 @@ userRoutes.post("/reset-password", userController.resetPassword);
 
 userRoutes.post("/check-token", userController.validatePassToken);
 
-userRoutes.post("/new-password/:resetToken", userController.newPassword)
+userRoutes.post("/new-password/:resetToken", userController.newPassword);
 
-userRoutes.post(
-  "/test",
-  checkAuth,
-  userController.test
-);
+userRoutes.post("/test", checkAuth, userController.test);
 
 // userRoutes.get(
 //   "/google",
@@ -51,20 +47,8 @@ userRoutes.post(
 //   userController.sendFacebookJWTToken
 // );
 
-userRoutes.get(
-  "/all-users",
-  checkAuth,
-  userController.getAllUsers
-);
+userRoutes.get("/all-users", checkAuth, userController.getAllUsers);
 
-userRoutes.get(
-  "/:userId",
-  checkAuth,
-  userController.findOneUser
-);
+userRoutes.get("/:userId", checkAuth, userController.findOneUser);
 
-userRoutes.delete(
-  "/:userId",
-  checkAuth,
-  userController.deleteUser
-);
+userRoutes.delete("/:userId", checkAuth, userController.deleteUser);

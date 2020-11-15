@@ -7,8 +7,14 @@ export default {
       const { title, content, teamId, tag } = req.body;
       // const url = req.protocol + "://" + req.get("host");
       const authUser = await User.findById(req.userData.userId);
-      if(authUser.role === "user") {
-        return res.status(401).json({success: false, msg: "Not Allowed to create News", auth: authUser.role})
+      if (authUser.role === "user") {
+        return res
+          .status(401)
+          .json({
+            success: false,
+            msg: "Not Allowed to create News",
+            auth: authUser.role,
+          });
       }
       const news = new News({
         title,
@@ -32,9 +38,9 @@ export default {
       if (!news) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
-      const filteredNews = await News.find({tag: news.tag}).limit(5);
+      const filteredNews = await News.find({ tag: news.tag }).limit(5);
 
-      res.status(200).json({news, filteredNews});
+      res.status(200).json({ news, filteredNews });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -57,7 +63,7 @@ export default {
       const { title, content, teamId, tag } = req.body;
       // const url = req.protocol + "://" + req.get("host");
       const newsToUpdate = await News.findById(req.params.newsId);
-      const authUser = await User.findOne({_id: req.userData.userId});
+      const authUser = await User.findOne({ _id: req.userData.userId });
 
       if (!newsToUpdate) {
         res.status(401).json({ success: false, msg: "Can not find news" });
@@ -66,8 +72,10 @@ export default {
         return res.status(401).json({ success: false, msg: "Unauthorized.." });
       }
 
-      if(!authUser || authUser.role !== "admin") {
-        return res.status(401).json({success: false, msg: "Not Allowed to update News"})
+      if (!authUser || authUser.role !== "admin") {
+        return res
+          .status(401)
+          .json({ success: false, msg: "Not Allowed to update News" });
       }
       let imagePath = req.body.image;
       if (req.file) {
@@ -88,9 +96,11 @@ export default {
   async deleteNews(req, res, next) {
     try {
       const newsToDelete = await News.findById(req.params.newsId);
-      const authUser = await User.findOne({_id: req.userData.userId});
-      if(!authUser || authUser.role !== "admin") {
-        return res.status(401).json({success: false, msg: "Not Allowed to create News"})
+      const authUser = await User.findOne({ _id: req.userData.userId });
+      if (!authUser || authUser.role !== "admin") {
+        return res
+          .status(401)
+          .json({ success: false, msg: "Not Allowed to create News" });
       }
       if (!newsToDelete) {
         res.status(401).json({ success: false, msg: "Can not find news" });
