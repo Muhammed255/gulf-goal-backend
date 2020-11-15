@@ -33,7 +33,7 @@ export default {
         { userId: user._id, email: user.local.email },
         appConfig.securityCode,
         {
-          expiresIn: "",
+          expiresIn: "360d",
         }
       );
       res
@@ -134,7 +134,7 @@ export default {
           .json({ success: false, msg: "password is incorrect !!" });
       }
       const token = jwt.sign(
-        { userId: checkEmail._id },
+        { userId: checkEmail._id, email: checkEmail.email },
         appConfig.securityCode,
         {expiresIn: "360d"}
       );
@@ -142,8 +142,7 @@ export default {
         msg: "LoggedIn successfully !",
         success: true,
         userId: checkEmail._id,
-        token,
-        expiresIn: 84600,
+        token
       });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Error: " + err });
