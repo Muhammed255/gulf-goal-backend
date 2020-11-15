@@ -21,12 +21,13 @@ export default {
         });
       }
 
-      const user = await User.create({
-        "local.username": username,
-        "local.email": email,
-        "local.password": hash,
-        preferredLanguage: preferredLanguage,
-      });
+      const user = new User();
+      user.local.email = email;
+      user.local.username = username;
+      user.local.password = hash;
+      user.preferredLanguage = preferredLanguage;
+
+      await user.save();
 
       const token = jwt.sign(
         { userId: user._id, email: user.local.email },
