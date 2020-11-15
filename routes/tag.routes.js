@@ -1,12 +1,13 @@
 import express from "express";
 import passport from "passport";
 import tagController from "../controllers/tag.controller.js";
+import { checkAuth } from "../middleware/check-auth.js";
 
 export const tagRoutes = express.Router();
 
 tagRoutes.post(
   "/add-tag",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   tagController.addNewTag
 );
 
@@ -15,14 +16,14 @@ tagRoutes.get("/all-tags", tagController.getAllTags);
 tagRoutes
   .route("/:tagId")
   .get(
-    passport.authenticate("jwt", { session: false }),
+    checkAuth,
     tagController.findOneTag
   )
   .put(
-    passport.authenticate("jwt", { session: false }),
+    checkAuth,
     tagController.updateTag
   )
   .delete(
-    passport.authenticate("jwt", { session: false }),
+    checkAuth,
     tagController.deleteTag
   );

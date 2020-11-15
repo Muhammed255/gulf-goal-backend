@@ -11,24 +11,26 @@ export default {
       }
 
       let teamsArray = {
-          team_name: req.body.team_name,
-          team_key: req.body.team_key,
-          team_badge: req.body.team_badge,
+        team_name: req.body.team_name,
+        team_key: req.body.team_key,
+        team_badge: req.body.team_badge,
+      };
+      let temp = false;
+      authUser.fav_teams.forEach((team) => {
+        if (team.team_key === teamsArray.team_key) {
+          temp = true;
         }
-        let temp = false;
-        authUser.fav_teams.forEach(team => {
-          if(team.team_key === teamsArray.team_key) {
-            temp = true;
-          }
-        });
-        if(temp) {
-          res.status(401).json({msg: "You already make this team as favorite 🤦‍♂️🤷‍♀️"})
-        }
+      });
+      if (temp) {
+        res
+          .status(401)
+          .json({ msg: "You already make this team as favorite 🤦‍♂️🤷‍♀️" });
+      }
       let teams = await User.findOneAndUpdate(
-        {_id: req.userData._id},
-        {$push: {fav_teams: teamsArray}},
-        {safe: true, upsert: true, new : true},
-      )
+        { _id: req.userData._id },
+        { $push: { fav_teams: teamsArray } },
+        { safe: true, upsert: true, new: true }
+      );
       res.status(200).json({
         success: true,
         msg: "teams added to favorites",
@@ -42,12 +44,32 @@ export default {
 
   async getFavorites(req, res, next) {
     try {
-      const favorites = await User.find().select(
-        "fav_teams"
-      );
+      const favorites = await User.find().select("fav_teams");
       res.status(200).json(favorites[0].fav_teams);
     } catch (err) {
       res.status(500).json(err);
+    }
+  },
+
+  async removeFromFavorites(req, res, next) {
+    try {
+      const authUser = await User.findOne({ _id: req.userData._id });
+      if (!authUser) {
+        return res
+          .status(409)
+          .json({ success: false, msg: "Not authorized!!" });
+      }
+      let teams = await User.findOneAndUpdate(
+        { _id: req.userData._id },
+        { $pull: { fav_teams: { $elemMatch: { _id: req.body.teamId } } } },
+        { safe: true, upsert: true, new: true }
+      );
+
+      res
+        .status(200)
+        .json({ success: true, msg: "Deleted from favorites", teams });
+    } catch (err) {
+      res.status(500).json({ err });
     }
   },
 };

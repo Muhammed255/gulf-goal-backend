@@ -3,6 +3,7 @@ import express from "express";
 import multer from "multer";
 import passport from "passport";
 import newsController from "../controllers/news.controller.js";
+import { checkAuth } from "../middleware/check-auth.js";
 
 const MIME_TYPE_MAP = {
   "image/jpg": "jpg",
@@ -42,36 +43,36 @@ export const newsRoutes = express.Router();
 
 newsRoutes.post(
   "/create-news",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   multer({ storage: storage, fileFilter: fileFilter }).single("image"),
   newsController.addNews
 );
 
 newsRoutes.post(
   "/add-comment",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   newsController.commentNews
 );
 
 newsRoutes.post(
   "/do-reply",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   newsController.newsCommentReply
 );
 
 newsRoutes.post(
   "/like-news",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   newsController.likeNew
 );
 
 newsRoutes.post(
   "/dislike-news",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   newsController.dislikeNew
 );
 
-newsRoutes.post('/trend/:newsId', passport.authenticate("jwt", { session: false }), newsController.makeNewsTrend);
+newsRoutes.post('/trend/:newsId', checkAuth, newsController.makeNewsTrend);
 
 newsRoutes.get(
   "/all-news",
@@ -82,13 +83,13 @@ newsRoutes.get("/all-trends", newsController.getTrendingNews);
 
 newsRoutes.put(
   "/add-to-favorites/:newsId",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   newsController.addNewsToFavorite
 );
 
 newsRoutes.put(
   "/remove-from-favorites/:newsId",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   newsController.removeNewsFromFavorites
 );
 
@@ -98,11 +99,11 @@ newsRoutes
     newsController.findOneNews
   )
   .put(
-    passport.authenticate("jwt", { session: false }),
+    checkAuth,
     multer({ storage, fileFilter }).single("image"),
     newsController.updateNews
   )
   .delete(
-    passport.authenticate("jwt", { session: false }),
+    checkAuth,
     newsController.deleteNews
   );

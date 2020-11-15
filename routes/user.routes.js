@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
 import userController from "../controllers/user.controller.js";
+import { checkAuth } from "../middleware/check-auth.js";
 
 export const userRoutes = express.Router();
 
@@ -16,9 +17,15 @@ userRoutes.post("/admin-login", userController.admin_login);
 
 userRoutes.post("/admin-signup", userController.admin_signup);
 
+userRoutes.post("/reset-password", userController.resetPassword);
+
+userRoutes.post("/check-token", userController.validatePassToken);
+
+userRoutes.post("/new-password/:resetToken", userController.newPassword)
+
 userRoutes.post(
   "/test",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   userController.test
 );
 
@@ -46,18 +53,18 @@ userRoutes.get(
 
 userRoutes.get(
   "/all-users",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   userController.getAllUsers
 );
 
 userRoutes.get(
   "/:userId",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   userController.findOneUser
 );
 
 userRoutes.delete(
   "/:userId",
-  passport.authenticate("jwt", { session: false }),
+  checkAuth,
   userController.deleteUser
 );
