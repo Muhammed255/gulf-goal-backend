@@ -86,6 +86,7 @@ const newsSchema = new mongoose.Schema({
       type: ObjectId,
       ref: "News",
       unique: true,
+      default: []
     },
   ],
   created_at: {
