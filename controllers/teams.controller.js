@@ -94,7 +94,7 @@ export default {
         .filter(function (o1) {
           // filter out (!) items in result2
           return fav_teams.fav_teams.some(function (o2) {
-            return o1.match_awayteam_id === o2.team_key;
+            return o1.match_awayteam_id === o2.team_key || o1.match_hometeam_id === o2.team_key;
           });
         })
         .map(function (o) {

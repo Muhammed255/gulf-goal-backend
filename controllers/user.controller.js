@@ -16,7 +16,7 @@ export default {
       const authUser = await User.findOne({ "local.email": email });
       if (authUser) {
         return res.status(401).json({
-          msg: "User with this email already exists !!",
+          msg: "المستخدم موجود بالفعل!!",
           success: false,
         });
       }
@@ -32,8 +32,8 @@ export default {
       const token = jwt.sign(
         {
           userId: user._id,
-          email: checkEmail.local.email,
-          username: checkEmail.local.username,
+          email: user.local.email,
+          username: user.local.username,
         },
         appConfig.securityCode,
         {
@@ -44,7 +44,7 @@ export default {
         .status(200)
         .json({ success: true, msg: "تم التسجيل بنجاح ...", token, username: user.local.username });
     } catch (err) {
-      console.log("");
+      console.log(err);
       return res.status(500).json({ success: false, msg: "هناك خطأ ما...." });
     }
   },
@@ -137,7 +137,7 @@ export default {
       if (!checkEmail) {
         return res
           .status(401)
-          .json({ success: false, msg: "الايميل مسجل بالفعل !!" });
+          .json({ success: false, msg: "الايميل ليس مسجل !!" });
       }
       const matched = await bcrypt.compare(password, checkEmail.local.password);
       if (!matched) {
