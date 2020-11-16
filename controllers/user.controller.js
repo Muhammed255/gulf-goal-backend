@@ -42,10 +42,10 @@ export default {
       );
       res
         .status(200)
-        .json({ success: true, msg: "registered successfully ....", token });
+        .json({ success: true, msg: "تم التسجيل بنجاح ...", token, username: user.local.username });
     } catch (err) {
-      console.log("Error: " + err);
-      return res.status(500).json({ success: false, msg: err });
+      console.log("");
+      return res.status(500).json({ success: false, msg: "هناك خطأ ما...." });
     }
   },
 
@@ -61,7 +61,7 @@ export default {
       });
       res
         .status(200)
-        .json({ success: true, msg: "registered successfully ....", token });
+        .json({ success: true, msg: "تم التسجيل بنجاح...", token });
     } catch (err) {
       console.log("Error: " + err);
       return res.status(500).json({ err });
@@ -81,7 +81,7 @@ export default {
 
       res
         .status(200)
-        .json({ success: true, msg: "registered successfully ....", token });
+        .json({ success: true, msg: "تم التسجيل بنجاح...", token });
     } catch (err) {
       console.log("Error: " + err);
       return res.status(500).json({ err });
@@ -137,13 +137,13 @@ export default {
       if (!checkEmail) {
         return res
           .status(401)
-          .json({ success: false, msg: "Email is not registered !!" });
+          .json({ success: false, msg: "الايميل مسجل بالفعل !!" });
       }
       const matched = await bcrypt.compare(password, checkEmail.local.password);
       if (!matched) {
         return res
           .status(402)
-          .json({ success: false, msg: "password is incorrect !!" });
+          .json({ success: false, msg: "الرقم السري خطا !!" });
       }
       const token = jwt.sign(
         {
@@ -155,13 +155,13 @@ export default {
         { expiresIn: "360d" }
       );
       res.status(200).json({
-        msg: "LoggedIn successfully !",
+        msg: "تم الدخول بنجاح ...",
         success: true,
-        userId: checkEmail._id,
+        username: checkEmail.local.username,
         token,
       });
     } catch (err) {
-      res.status(500).json({ success: false, msg: "Error: " + err });
+      res.status(500).json({ success: false, msg: "هناك خطأ ما....." });
     }
   },
 
@@ -272,13 +272,13 @@ export default {
     try {
       const email = req.body.email;
       if (!email) {
-        res.status(500).json({ success: false, msg: "Email is required!" });
+        res.status(500).json({ success: false, msg: "الايميل مطلوب" });
       }
       const user = await User.findOne({ "local.email": email });
       if (!user) {
         res
           .status(409)
-          .json({ success: false, msg: "No user with this email found" });
+          .json({ success: false, msg: "لا يوجد مستخدم بهذا الايميل" });
       }
       const resetPass = new ResetToken({
         userId: user._id,
@@ -291,7 +291,7 @@ export default {
       })
         .remove()
         .exec();
-      res.status(200).json({ msg: "Check your email inbox" });
+      res.status(200).json({ msg: "افحص حسابك للكود" });
       sgMail.setApiKey(appConfig.sendGrid_API_Key);
       var mailOptions = {
         from: "admin@gulf-goal.com",
@@ -307,31 +307,31 @@ export default {
       };
       sgMail.send(mailOptions);
     } catch (err) {
-      res.status(500).json({ err });
+      res.status(500).json({ success: false, msg: "هناك خطأ ما!!" });
     }
   },
 
   async validatePassToken(req, res, next) {
     const token = req.body.resetToken;
     if (!token) {
-      return res.status(500).json({ success: false, msg: "Token is required" });
+      return res.status(500).json({ success: false, msg: "الكود مطلوب" });
     }
     const tokenCheck = await ResetToken.findOne({ resetToken: token });
     if (!tokenCheck) {
-      return res.status(409).json({ success: false, msg: "Invalid Token" });
+      return res.status(409).json({ success: false, msg: "الكود غير صالح !!" });
     }
-    res.status(200).json({ success: true, msg: "Verified" });
+    res.status(200).json({ success: true, msg: "تم التأكيد" });
   },
 
   async newPassword(req, res, next) {
     try {
       const reset = await ResetToken.findOne({ _id: req.params.resetToken });
       if (!reset) {
-        res.status(500).json({ success: false, msg: "Token has expired" });
+        res.status(500).json({ success: false, msg: "انتهت مدة الكود" });
       }
       const user = await User.findOne({ _id: reset.userId });
       if (!user) {
-        res.status(401).json({ success: false, msg: "No user found" });
+        res.status(401).json({ success: false, msg: "لا يوجد مستخدم بهذا الايميل" });
       }
 
       const salt = await bcrypt.genSalt();
