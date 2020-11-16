@@ -62,6 +62,8 @@ newsRoutes.get("/all-news", newsController.allNews);
 
 newsRoutes.get("/all-trends", newsController.getTrendingNews);
 
+newsRoutes.get("/filtered-news", newsController.filterNewsByTag);
+
 newsRoutes.put(
   "/add-to-favorites/:newsId",
   checkAuth,

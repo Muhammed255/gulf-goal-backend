@@ -8,13 +8,11 @@ export default {
       // const url = req.protocol + "://" + req.get("host");
       const authUser = await User.findById(req.userData.userId);
       if (authUser.role === "user") {
-        return res
-          .status(401)
-          .json({
-            success: false,
-            msg: "Not Allowed to create News",
-            auth: authUser.role,
-          });
+        return res.status(401).json({
+          success: false,
+          msg: "Not Allowed to create News",
+          auth: authUser.role,
+        });
       }
       const news = new News({
         title,
@@ -34,11 +32,11 @@ export default {
 
   async findOneNews(req, res, next) {
     try {
-      const news = await News.findById(req.params.newsId);
+      const news = await News.findById(req.params.newsId).populate("tag");
       if (!news) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
-      const filteredNews = await News.find({ tag: news.tag }).limit(5);
+      const filteredNews = await News.find({ tag: news.tag._id }).limit(5);
 
       res.status(200).json({ news, filteredNews });
     } catch (err) {
@@ -374,6 +372,22 @@ export default {
       res.status(200).json(trends[0].trends);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
+    }
+  },
+
+  async filterNewsByTag(req, res, next) {
+    try {
+      const fetchedNews = await News.find({ tag: req.body.tag }).select(
+        "tag -userId"
+      );
+      if (fetchedNews.length < 1) {
+        res.status(403).json({ success: false, msg: "No News Found" });
+      }
+      res
+        .status(200)
+        .json({ success: true, msg: "Fetched", news: fetchedNews });
+    } catch (err) {
+      res.status(500).json({ success: false, msg: "Error !!" });
     }
   },
 };

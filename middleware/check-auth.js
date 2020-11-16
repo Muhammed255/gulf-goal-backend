@@ -4,7 +4,7 @@ import { appConfig } from "./app-config.js";
 export function checkAuth(req, res, next) {
   try {
     if (req.headers && req.headers.authorization) {
-      const token = req.headers.authorization;
+      const token = req.headers.authorization.split(" ")[1];
       if (!token) {
         res.status(500).json({ success: false, msg: "please provide token" });
       }
