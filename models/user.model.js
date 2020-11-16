@@ -76,4 +76,10 @@ userSchema.plugin(uniqueValidator);
 //   }
 // });
 
+userSchema.method('transform', function() {
+  var obj = this.toObject();
+
+  obj.fav
+})
+
 export default mongoose.model("User", userSchema);

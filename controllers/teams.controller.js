@@ -60,10 +60,10 @@ export default {
           .status(409)
           .json({ success: false, msg: "Not authorized!!" });
       }
-      let teams = await User.findOneAndUpdate(
+      let teams = await User.updateOne(
         { _id: req.userData.userId },
         { $pull: { fav_teams: { $elemMatch: { team_key: req.body.teamId } } } },
-        { safe: true, upsert: true, new: true }
+        { safe: true, upsert: true, new: true, multi:true }
       );
 
       res
