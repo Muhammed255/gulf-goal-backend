@@ -16,12 +16,11 @@ export default {
         team_name: req.body.team_name,
         team_badge: req.body.team_badge,
       };
-      let temp = false;
       const teamIndex = authUser.fav_teams.findIndex(
         (t) => t.team_key === req.body.team_key
       );
       if (teamIndex !== -1) {
-        return res.status(401).json({
+        res.status(401).json({
           success: false,
           msg: "You already add this teams to favorites 🤦‍♂️🤷‍♀️",
         });
@@ -71,7 +70,7 @@ export default {
         .status(200)
         .json({ success: true, msg: "Deleted from favorites", teams });
     } catch (err) {
-      res.status(500).json({ err });
+      res.status(500).json({ success: false, msg: "error" });
     }
   },
 
