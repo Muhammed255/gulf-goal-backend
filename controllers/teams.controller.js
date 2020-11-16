@@ -63,7 +63,7 @@ export default {
       let teams = await User.update(
         { _id: req.userData.userId },
         { $pull: { fav_teams: { team_key: req.body.teamId } } },
-        { safe: true, upsert: true, new: true, multi:true }
+        { safe: true, upsert: true, multi:true }
       );
 
       res
