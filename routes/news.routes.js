@@ -58,6 +58,8 @@ newsRoutes.post("/dislike-news", checkAuth, newsController.dislikeNew);
 
 newsRoutes.post("/trend/:newsId", checkAuth, newsController.makeNewsTrend);
 
+newsRoutes.get("/all-news", newsController.allNews);
+
 newsRoutes.get("/all-trends", newsController.getTrendingNews);
 
 newsRoutes.get("/filtered-news", newsController.filterNewsByTag);
@@ -67,7 +69,6 @@ newsRoutes.put(
   checkAuth,
   newsController.addNewsToFavorite
 );
-newsRoutes.get("/all-news/:tag", newsController.allNews);
 
 newsRoutes.put(
   "/remove-from-favorites/:newsId",
