@@ -46,10 +46,18 @@ export default {
 
   async allNews(req, res, next) {
     try {
-      const allNews = await News.find()
-        .sort({ created_at: -1 })
-        .populate("comments.commentator")
-        .populate("comments.replies.replier");
+      const tag = req.query.tag;
+      let allNews = News.find();
+      if (tag === 'allTags') {
+        allNews
+          .sort({ created_at: -1 })
+          .populate("userId")
+          .populate("comments.commentator")
+          .populate("comments.replies.replier");
+      }
+      if (tag) {
+        allNews = await allNews.where("tag").equals(tag).exec();
+      }
       res.status(200).json(allNews);
     } catch (err) {
       res.status(500).json(err);

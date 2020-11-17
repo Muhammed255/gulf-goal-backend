@@ -232,7 +232,7 @@ export default {
 
   async getAllUsers(req, res, next) {
     try {
-      const users = await User.find().populate("fav_news");
+      const users = await User.find({_id: {$ne: req.userData.userId}}).populate("fav_news");
       if (users.length < 1) {
         return res.status(401).json({ success: false, msg: "No Users found" });
       }
