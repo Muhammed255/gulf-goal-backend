@@ -49,6 +49,7 @@ export default {
       const allNews = await News.find()
         .sort({ created_at: -1 })
         .populate("userId")
+        .populate({path: "tag", select: "tag"})
         .populate("comments.commentator")
         .populate("comments.replies.replier");
       res.status(200).json(allNews);

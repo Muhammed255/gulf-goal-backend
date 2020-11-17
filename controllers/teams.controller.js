@@ -63,7 +63,7 @@ export default {
       let teams = await User.update(
         { _id: req.userData.userId },
         { $pull: { fav_teams: { team_key: req.body.teamId } } },
-        { safe: true, upsert: true, multi:true }
+        { safe: true, upsert: true, multi: true }
       );
 
       res
@@ -74,45 +74,28 @@ export default {
     }
   },
 
-  async getLiveMatches(req, res, next) {
+  async getFollowingLiveMatches(req, res, next) {
     try {
       const appResponse = await Axios.get(footballPi.event_url);
       const fav_teams = await User.findOne({ _id: req.userData.userId }).select(
         "fav_teams"
       );
 
-      // for (let index = 0; index < fav_teams.length; index++) {
-      //   const team = fav_teams[index];
-
-      // }
-      const live_matches = appResponse.data.map((match) => {
-        return match.match_live == 1;
+      var result = await appResponse.data.filter(function (o1) {
+        return fav_teams.fav_teams.some(function (o2) {
+          return (
+            (o1.match_awayteam_id === o2.team_key ||
+              o1.match_hometeam_id === o2.team_key) &&
+            o1.match_live === "1"
+          );
+        });
       });
 
-      var result = await live_matches
-        .filter(function (o1) {
-          // filter out (!) items in result2
-          return fav_teams.fav_teams.some(function (o2) {
-            return o1.match_awayteam_id === o2.team_key || o1.match_hometeam_id === o2.team_key;
-          });
-        })
-        .map(function (o) {
-          return props.reduce(function (newo, team_name) {
-            newo[team_name] = o[team_name];
-            return newo;
-          }, {});
-        });
-
-      // const found = live_matches.some(m => fav_teams.fav_teams.indexOf(m) >= 0);
-      // console.log("found: " + found)
-      res
-        .status(200)
-        .json({
-          success: true,
-          msg: "fetched",
-          matches: live_matches,
-          my_matches: result,
-        });
+      res.status(200).json({
+        success: true,
+        msg: "fetched",
+        result,
+      });
     } catch (err) {
       console.log(err);
       res.status(500).json({ err });
