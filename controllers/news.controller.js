@@ -52,7 +52,9 @@ export default {
         .populate({path: "tag", select: "tag"})
         .populate("comments.commentator")
         .populate("comments.replies.replier");
-        allNews.tag = allNews.tag.tag;
+        allNews.forEach(ele => {
+          ele.tag = ele.tag.tag;
+        });
       res.status(200).json(allNews);
     } catch (err) {
       res.status(500).json(err);
