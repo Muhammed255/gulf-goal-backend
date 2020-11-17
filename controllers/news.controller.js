@@ -46,12 +46,11 @@ export default {
 
   async allNews(req, res, next) {
     try {
-      let allNews = News.find()
+      const allNews = await News.find()
         .sort({ created_at: -1 })
         .populate("userId")
         .populate("comments.commentator")
-        .populate("comments.replies.replier")
-        .exec();
+        .populate("comments.replies.replier");
       res.status(200).json(allNews);
     } catch (err) {
       res.status(500).json(err);
