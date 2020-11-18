@@ -252,11 +252,12 @@ export default {
 
   async deleteUser(req, res, next) {
     try {
-      const user = await User.findOne({ _id: req.params.userId });
+      const user = await User.findById(req.params.userId);
       if (!user) {
         return res.status(200).json({ success: false, msg: "No User found" });
       }
-      await User.findOneAndDelete(user._id);
+
+      await User.findOneAndDelete({_id: user._id});
       res.status(200).json({ success: true, msg: "User deleted." });
     } catch (err) {
       res.status(500).json({ success: false, err });
