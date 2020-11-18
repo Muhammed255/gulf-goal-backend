@@ -20,3 +20,5 @@ teamsRoutes.post(
 teamsRoutes.get("/all-favorites", checkAuth, teamsController.getFavorites);
 
 teamsRoutes.get("/following-live-matches", checkAuth, teamsController.getFollowingLiveMatches);
+
+teamsRoutes.get("/following-coming-matches/:selectedDate", checkAuth, teamsController.getFollowingNextMatches);

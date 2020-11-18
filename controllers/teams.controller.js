@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { appConfig } from "../middleware/app-config.js";
 import { footballPi } from "../middleware/football-api.js";
 import User from "../models/user.model.js";
 
@@ -87,6 +88,36 @@ export default {
             (o1.match_awayteam_id === o2.team_key ||
               o1.match_hometeam_id === o2.team_key) &&
             o1.match_live === "1"
+          );
+        });
+      });
+
+      res.status(200).json({
+        success: true,
+        msg: "fetched",
+        result,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ err });
+    }
+  },
+
+  async getFollowingNextMatches(req, res, next) {
+    try {
+      const selectedDate = req.params.selectedDate;
+      const appResponse = await Axios.get(
+        `https://apiv2.apifootball.com/?action=get_events&from=${selectedDate}&to=${selectedDate}&APIkey=${appConfig.football_API_KEY}`
+      );
+      const fav_teams = await User.findOne({ _id: req.userData.userId }).select(
+        "fav_teams"
+      );
+
+      var result = await appResponse.data.filter(function (o1) {
+        return fav_teams.fav_teams.some(function (o2) {
+          return (
+            o1.match_awayteam_id === o2.team_key ||
+            o1.match_hometeam_id === o2.team_key
           );
         });
       });
