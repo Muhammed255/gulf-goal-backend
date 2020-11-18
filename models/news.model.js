@@ -48,6 +48,10 @@ const newsSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  is_trend: {
+    type: Boolean,
+    default: false
+  },
   comments: [
     {
       comment: { type: String, validate: commentValidator },

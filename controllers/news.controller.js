@@ -360,14 +360,17 @@ export default {
       const arrayLength = fetchedUser.trends_news.length;
       if (arrayLength <= 4) {
         fetchedUser.trends_news.push(news._id);
+        news.is_trend = true;
         console.log("normal: ", news.trends);
       } else {
         fetchedUser.trends_news.shift();
         fetchedUser.trends_news.push(news._id);
+        news.is_trend = true;
         console.log("after shifting: ", fetchedUser.trends);
       }
 
       await fetchedUser.save();
+      await news.save();
       res.status(200).json({ success: true, msg: "Becomes a trend" });
     } catch (err) {
       console.log(err);
