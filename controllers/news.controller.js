@@ -52,11 +52,15 @@ export default {
         .populate({path: "tag", select: "tag"})
         .populate("comments.commentator")
         .populate("comments.replies.replier");
+
         allNews.forEach(ele => {
-          ele.tag_name = ele.tag.tag;
+          if(ele.tag) {
+            ele.tag_name = ele.tag.tag;
+          }
         });
       res.status(200).json(allNews);
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },
