@@ -92,6 +92,10 @@ export default {
         });
       });
 
+      if(result.length < 1) {
+        res.status(400).json({success: false, msg: "لا يوجد مبارايات الان !!!"});
+      }
+
       res.status(200).json({
         success: true,
         msg: "fetched",
