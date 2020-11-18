@@ -53,7 +53,7 @@ export default {
         .populate("comments.commentator")
         .populate("comments.replies.replier");
         allNews.forEach(ele => {
-          ele.tag = ele.tag.tag;
+          ele.tag_name = ele.tag.tag;
         });
       res.status(200).json(allNews);
     } catch (err) {

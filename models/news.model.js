@@ -44,6 +44,10 @@ const newsSchema = new mongoose.Schema({
     ref: "Tag",
     required: true,
   },
+  tag_name: {
+    type: String,
+    default: null,
+  },
   comments: [
     {
       comment: { type: String, validate: commentValidator },
