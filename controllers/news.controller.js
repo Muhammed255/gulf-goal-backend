@@ -5,7 +5,7 @@ export default {
   async addNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      // const url = req.protocol + "://" + req.get("host");
+      const url = "https://gulf-goal.herokuapp.com";
       const authUser = await User.findById(req.userData.userId);
       if (authUser.role === "user") {
         return res.status(401).json({
@@ -17,7 +17,7 @@ export default {
       const news = new News({
         title,
         content,
-        image: "../images/" + req.file.originalname,
+        image: url + "/images/" + req.file.filename,
         userId: req.userData.userId,
         teamId,
         tag,
@@ -68,7 +68,7 @@ export default {
   async updateNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      // const url = req.protocol + "://" + req.get("host");
+      const url = "https://gulf-foal.herokuapp.com";
       const newsToUpdate = await News.findById(req.params.newsId);
       const authUser = await User.findOne({ _id: req.userData.userId });
 
@@ -86,7 +86,7 @@ export default {
       }
       let imagePath = req.body.image;
       if (req.file) {
-        imagePath = "../images/" + req.file.filename;
+        imagePath = url + "/images/" + req.file.filename;
       }
 
       await News.findByIdAndUpdate(
@@ -349,7 +349,7 @@ export default {
       if (!fetchedUser) {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
-      const newsIndex = news.trends.findIndex(
+      const newsIndex = fetchedUser.trends_news.findIndex(
         (t) => t.toString() === news._id.toString()
       );
       if (newsIndex !== -1) {
@@ -357,17 +357,17 @@ export default {
           .status(401)
           .json({ success: false, msg: "You already add this to trends" });
       }
-      const arrayLength = news.trends.length;
+      const arrayLength = fetchedUser.trends_news.length;
       if (arrayLength <= 4) {
-        news.trends.push(news._id);
+        fetchedUser.trends_news.push(news._id);
         console.log("normal: ", news.trends);
       } else {
-        news.trends.shift();
-        news.trends.push(news._id);
-        console.log("after shifting: ", news.trends);
+        fetchedUser.trends_news.shift();
+        fetchedUser.trends_news.push(news._id);
+        console.log("after shifting: ", fetchedUser.trends);
       }
 
-      await news.save();
+      await fetchedUser.save();
       res.status(200).json({ success: true, msg: "Becomes a trend" });
     } catch (err) {
       console.log(err);
@@ -377,10 +377,32 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await News.find().select("trends").populate("trends");
-      res.status(200).json(trends[0].trends);
+      const trends = await User.find().select("trends_news").populate("trends_news");
+      res.status(200).json(trends[0].trends_news);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
+    }
+  },
+
+  async removeTrend(req, res, next) {
+    try {
+      const news = await News.findById(req.params.newsId);
+      if (!news) {
+        return res.status(401).json({ success: false, msg: "No Id provided" });
+      }
+      const fetchedUser = await User.findOne({ _id: req.userData.userId });
+      if (!fetchedUser) {
+        return res.status(401).json({ success: false, msg: "Unautherized" });
+      }
+      const newsIndex = fetchedUser.trends_news.findIndex(
+        (t) => t.toString() === news._id.toString()
+      );
+      
+      fetchedUser.trends_news.splice(newsIndex, 1);
+      await fetchedUser.save();
+        res.status(200).json({success: true,msg: "Trend Deleted!!"});
+    } catch (err) {
+      res.status(500).json({err});
     }
   },
 

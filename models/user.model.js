@@ -51,6 +51,14 @@ var userSchema = new mongoose.Schema({
       },
     },
   ],
+  trends_news: [
+    {
+      type: ObjectId,
+      ref: "News",
+      unique: true,
+      default: [],
+    },
+  ],
   preferredLanguage: {
     type: String,
     enum: ["English", "Arabic", "Espanol", "Indonis"],
@@ -75,11 +83,5 @@ userSchema.plugin(uniqueValidator);
 //     this.password = hash;
 //   }
 // });
-
-userSchema.method('transform', function() {
-  var obj = this.toObject();
-
-  obj.fav
-})
 
 export default mongoose.model("User", userSchema);

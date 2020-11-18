@@ -85,14 +85,6 @@ const newsSchema = new mongoose.Schema({
   teamId: {
     type: String,
   },
-  trends: [
-    {
-      type: ObjectId,
-      ref: "News",
-      unique: true,
-      default: []
-    },
-  ],
   created_at: {
     type: Date,
     default: Date.now,
