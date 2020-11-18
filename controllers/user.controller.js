@@ -232,11 +232,19 @@ export default {
 
   async getAllUsers(req, res, next) {
     try {
-      const users = await User.find({_id: {$ne: req.userData.userId}}).populate("fav_news");
-      if (users.length < 1) {
+      const pageSize = +req.query.pageSize;
+      const currentPage = +req.query.page;
+      const userQuery = User.find({ _id: {$ne: req.userData.userId} }).populate("fav_news");
+      let fetchedUsers;
+        if (pageSize && currentPage) {
+           fetchedUsers = await userQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+        }
+
+        const count = await userQuery.countDocuments();
+      if (fetchedUsers.length < 1) {
         return res.status(401).json({ success: false, msg: "No Users found" });
       }
-      res.status(200).json({ success: true, users });
+      res.status(200).json({ success: true, users: fetchedUsers, count: count });
     } catch (err) {
       res.status(500).json({ err });
     }
