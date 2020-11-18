@@ -378,10 +378,20 @@ export default {
     }
   },
 
-  async getTrendingNews(req, res, next) {
+  async getAdminTrendingNews(req, res, next) {
     try {
       const trends = await User.find().select("trends_news").populate("trends_news");
 	console.log(JSON.stringify(trends[1].trends_news))
+      res.status(200).json(trends[1].trends_news);
+    } catch (err) {
+      res.status(500).json({ success: false, msg: err });
+    }
+  },
+
+  async getTrendingNews(req, res, next) {
+    try {
+      const trends = await User.find().select("trends_news").populate("trends_news");
+	// console.log(JSON.stringify(trends[1].trends_news))
       res.status(200).json(trends[1].trends_news);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
