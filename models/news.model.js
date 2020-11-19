@@ -66,6 +66,10 @@ const newsSchema = new mongoose.Schema({
       ],
     },
   ],
+   /*related_news: [{
+	type: ObjectId,
+	ref: "News"
+   }],*/
   likedBy: [
     {
       type: ObjectId,
