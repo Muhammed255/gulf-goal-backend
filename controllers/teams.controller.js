@@ -126,6 +126,10 @@ export default {
         });
       });
 
+      if(result.length < 1) {
+        res.status(200).json({success: false, msg: "لا توجد مبارايات اليوم !!!"});
+      }
+
       res.status(200).json({
         success: true,
         msg: "fetched",
