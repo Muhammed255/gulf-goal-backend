@@ -394,7 +394,7 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await User.find().select("trends_news").populate("trends_news");
+      const trends = await User.find().select("trends_news").populate({path: "trends_news", model: "News", populate: {path: "tag", model: "Tag"}});
       trends[1].trends_news.forEach(ele => {
           if(ele.tag) {
             ele.tag_name = ele.tag.tag;
