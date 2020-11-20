@@ -36,7 +36,6 @@ export default {
       if (!news) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
-      
 
       res.status(200).json({ news });
     } catch (err) {
@@ -46,23 +45,25 @@ export default {
 
   async allNews(req, res, next) {
     try {
-      const allNews = await News.find()
-        .sort({ created_at: -1 })
+      const allNews = await News.find();
+
+      allNews.forEach(async (ele) => {
+        if (ele.tag) {
+          ele.tag_name = ele.tag.tag;
+          const filtered = await News.find({ tag_name: ele.tag.tag })
+            .limit(5)
+            .sort({ created_at: -1 });
+          ele.related_news.push(filtered._id);
+          ele.save();
+        }
+      });
+      const relatedNews = await News.sort({ created_at: -1 })
         .populate("userId")
-        .populate({path: "tag", select: "tag"})
+        .populate("related_news")
+        .populate({ path: "tag", select: "tag" })
         .populate("comments.commentator")
         .populate("comments.replies.replier");
-
-	let filteredNews;
-
-        allNews.forEach(ele => {
-          if(ele.tag) {
-            ele.tag_name = ele.tag.tag;
-	    //ele.related_news = await News.find({ tag_name: ele.tag.tag }).limit(5).sort({created_at: -1});
-          }
-        });
-	
-      res.status(200).json(allNews);
+      res.status(200).json(relatedNews);
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
@@ -384,8 +385,10 @@ export default {
 
   async getAdminTrendingNews(req, res, next) {
     try {
-      const trends = await User.find().select("trends_news").populate("trends_news");
-	console.log(JSON.stringify(trends[1].trends_news))
+      const trends = await User.find()
+        .select("trends_news")
+        .populate("trends_news");
+      console.log(JSON.stringify(trends[1].trends_news));
       res.status(200).json(trends[1].trends_news);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
@@ -394,12 +397,18 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await User.find().select("trends_news").populate({path: "trends_news", model: "News", populate: {path: "tag", model: "Tag"}});
-      trends[1].trends_news.forEach(ele => {
-          if(ele.tag) {
-            ele.tag_name = ele.tag.tag;
-          }
+      const trends = await User.find()
+        .select("trends_news")
+        .populate({
+          path: "trends_news",
+          model: "News",
+          populate: { path: "tag", model: "Tag" },
         });
+      trends[1].trends_news.forEach((ele) => {
+        if (ele.tag) {
+          ele.tag_name = ele.tag.tag;
+        }
+      });
       res.status(200).json(trends[1].trends_news);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
@@ -419,12 +428,12 @@ export default {
       const newsIndex = fetchedUser.trends_news.findIndex(
         (t) => t.toString() === news._id.toString()
       );
-      
+
       fetchedUser.trends_news.splice(newsIndex, 1);
       await fetchedUser.save();
-        res.status(200).json({success: true,msg: "Trend Deleted!!"});
+      res.status(200).json({ success: true, msg: "Trend Deleted!!" });
     } catch (err) {
-      res.status(500).json({err});
+      res.status(500).json({ err });
     }
   },
 

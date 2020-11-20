@@ -1,3 +1,4 @@
+import moment from "moment";
 import mongoose from "mongoose";
 
 const ObjectId = mongoose.Types.ObjectId;
@@ -50,7 +51,7 @@ const newsSchema = new mongoose.Schema({
   },
   is_trend: {
     type: Boolean,
-    default: false
+    default: false,
   },
   comments: [
     {
@@ -66,10 +67,13 @@ const newsSchema = new mongoose.Schema({
       ],
     },
   ],
-   /*related_news: [{
-	type: ObjectId,
-	ref: "News"
-   }],*/
+  related_news: [
+    {
+      type: ObjectId,
+      ref: "News",
+      default: [],
+    },
+  ],
   likedBy: [
     {
       type: ObjectId,
@@ -94,8 +98,8 @@ const newsSchema = new mongoose.Schema({
     type: String,
   },
   created_at: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    default: () => moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
   },
 });
 
