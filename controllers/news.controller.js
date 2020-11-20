@@ -45,7 +45,16 @@ export default {
 
   async allNews(req, res, next) {
     try {
-      const allNews = await News.find();
+      const allNews = await News.find()
+        .populate({
+          path: "tag",
+          select: "tag",
+        })
+        .sort({ created_at: -1 })
+        .populate("userId")
+        .populate("related_news")
+        .populate("comments.commentator")
+        .populate("comments.replies.replier");
 
       allNews.forEach(async (ele) => {
         if (ele.tag) {
@@ -53,17 +62,20 @@ export default {
           const filtered = await News.find({ tag_name: ele.tag.tag })
             .limit(5)
             .sort({ created_at: -1 });
-          ele.related_news.push(filtered._id);
-          ele.save();
+          filtered.forEach(async (filter) => {
+            if (ele.related_news.some(r => r._id === filter._id)) {
+              return;
+            }
+            await ele.related_news.push(filter._id);
+            ele.populate({ path: "related_news", model: "News" });
+            await ele.save();
+            console.log(JSON.stringify(ele));
+          });
         }
       });
-      const relatedNews = await News.sort({ created_at: -1 })
-        .populate("userId")
-        .populate("related_news")
-        .populate({ path: "tag", select: "tag" })
-        .populate("comments.commentator")
-        .populate("comments.replies.replier");
-      res.status(200).json(relatedNews);
+
+      res.status(200).json(allNews);
+      // console.log(JSON.stringify(relatedNews));
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
