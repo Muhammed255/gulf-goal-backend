@@ -63,7 +63,7 @@ export default {
             .limit(5)
             .sort({ created_at: -1 });
           filtered.forEach(async (filter) => {
-            if (ele.related_news.some(r => r._id === filter._id)) {
+            if (ele.related_news.some((r) => r._id === filter._id)) {
               return;
             }
             await ele.related_news.push(filter._id);

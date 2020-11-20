@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import passport from "passport";
 import userController from "../controllers/user.controller.js";
 import { checkAuth } from "../middleware/check-auth.js";
@@ -22,6 +23,13 @@ userRoutes.post("/reset-password", userController.resetPassword);
 userRoutes.post("/check-token", userController.validatePassToken);
 
 userRoutes.post("/new-password/:resetToken", userController.newPassword);
+
+userRoutes.post(
+  "/update-image",
+  checkAuth,
+  multer().single("image"),
+  userController.updateProfileImage
+);
 
 userRoutes.post("/test", checkAuth, userController.test);
 

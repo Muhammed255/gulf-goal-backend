@@ -40,9 +40,12 @@ export default {
           expiresIn: "360d",
         }
       );
-      res
-        .status(200)
-        .json({ success: true, msg: "تم التسجيل بنجاح ...", token, username: user.local.username });
+      res.status(200).json({
+        success: true,
+        msg: "تم التسجيل بنجاح ...",
+        token,
+        username: user.local.username,
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ success: false, msg: "هناك خطأ ما...." });
@@ -234,17 +237,23 @@ export default {
     try {
       const pageSize = +req.query.pageSize;
       const currentPage = +req.query.page;
-      const userQuery = User.find({ _id: {$ne: req.userData.userId} }).populate("fav_news");
+      const userQuery = User.find({
+        _id: { $ne: req.userData.userId },
+      }).populate("fav_news");
       let fetchedUsers;
-        if (pageSize && currentPage) {
-           fetchedUsers = await userQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
-        }
+      if (pageSize && currentPage) {
+        fetchedUsers = await userQuery
+          .skip(pageSize * (currentPage - 1))
+          .limit(pageSize);
+      }
 
-        const count = await userQuery.countDocuments();
+      const count = await userQuery.countDocuments();
       if (fetchedUsers.length < 1) {
         return res.status(401).json({ success: false, msg: "No Users found" });
       }
-      res.status(200).json({ success: true, users: fetchedUsers, count: count });
+      res
+        .status(200)
+        .json({ success: true, users: fetchedUsers, count: count });
     } catch (err) {
       res.status(500).json({ err });
     }
@@ -257,7 +266,7 @@ export default {
         return res.status(200).json({ success: false, msg: "No User found" });
       }
 
-      await User.findOneAndDelete({_id: user._id});
+      await User.findOneAndDelete({ _id: user._id });
       res.status(200).json({ success: true, msg: "User deleted." });
     } catch (err) {
       res.status(500).json({ success: false, err });
@@ -340,7 +349,9 @@ export default {
       }
       const user = await User.findOne({ _id: reset.userId });
       if (!user) {
-        res.status(401).json({ success: false, msg: "لا يوجد مستخدم بهذا الايميل" });
+        res
+          .status(401)
+          .json({ success: false, msg: "لا يوجد مستخدم بهذا الايميل" });
       }
 
       const salt = await bcrypt.genSalt();
@@ -354,6 +365,28 @@ export default {
         .json({ success: true, msg: "Password reset succssfully" });
     } catch (err) {
       res.status(500).json({ err });
+    }
+  },
+
+  async updateProfileImage(req, res, next) {
+    try {
+      const authUser = await User.findOne({ _id: req.userData.userId });
+      if (!authUser) {
+        return res.status(400).json({ success: false, msg: "Unauthorized!" });
+      }
+      const url = "https://gulf-goal.herokuapp.com";
+      let imagePath = req.body.image;
+      if (req.file) {
+        imagePath = url + "/images/" + req.file.filename;
+      }
+      await User.findOneAndUpdate(
+        { _id: req.userData.userId },
+        { image: imagePath },
+        { new: true, upsert: true }
+      );
+      res.status(200).json({ success: true, msg: "Image Updated...." });
+    } catch (err) {
+      res.status(500).json({ success: false, msg: "Error occured" });
     }
   },
 };
