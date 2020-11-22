@@ -55,7 +55,6 @@ var userSchema = new mongoose.Schema({
     {
       type: ObjectId,
       ref: "News",
-      unique: true,
       default: [],
     },
   ],
