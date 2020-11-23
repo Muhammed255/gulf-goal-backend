@@ -368,8 +368,8 @@ export default {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
 
-      
 
+      const trends = new  Trends();
       // const checkTrends = await Trends.find();
 
       // const trends = new Trends();

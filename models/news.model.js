@@ -21,6 +21,7 @@ const commentValidator = [
     message: "comment can not exceed 200 characters",
   },
 ];
+const curent_date = new Date();
 
 const newsSchema = new mongoose.Schema({
   title: {
@@ -99,7 +100,7 @@ const newsSchema = new mongoose.Schema({
   },
   created_at: {
     type: String,
-    default: () => moment().format("MMM Do YYYY"),
+    default: () => moment(Date.now).format("MMMM d, YYYY"),
   },
 });
 
