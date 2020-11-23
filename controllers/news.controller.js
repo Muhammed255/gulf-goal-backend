@@ -427,9 +427,8 @@ export default {
       const trends = await Trends.find()
         .populate({
           path: "trends_news",
-          model: "News",
-          populate: { path: "tag", model: "Tag" },
-        })
+          model: "News"
+        }).populate("tag")
         .populate("userId");
       trends.forEach((ele) => {
         if (ele.tag) {
