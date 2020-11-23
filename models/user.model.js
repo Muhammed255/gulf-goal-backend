@@ -51,13 +51,6 @@ var userSchema = new mongoose.Schema({
       },
     },
   ],
-  trends_news: [
-    {
-      type: ObjectId,
-      ref: "News",
-      default: [],
-    },
-  ],
   preferredLanguage: {
     type: String,
     enum: ["English", "Arabic", "Espanol", "Indonis"],
@@ -68,8 +61,8 @@ var userSchema = new mongoose.Schema({
     default: null,
   },
   created_at: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    default: () => moment().format("YYYY-MM-DD"),
   },
 });
 

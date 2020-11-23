@@ -22,7 +22,7 @@ const commentValidator = [
   },
 ];
 
-const newsSchema = new mongoose.Schema({
+const trendsSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -48,10 +48,6 @@ const newsSchema = new mongoose.Schema({
   tag_name: {
     type: String,
     default: null,
-  },
-  is_trend: {
-    type: Boolean,
-    default: false,
   },
   comments: [
     {
@@ -103,4 +99,4 @@ const newsSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("News", newsSchema);
+export default mongoose.model("Trends", trendsSchema);

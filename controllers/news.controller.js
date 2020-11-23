@@ -1,4 +1,5 @@
 import News from "../models/news.model.js";
+import Trends from "../models/trends.model.js";
 import User from "../models/user.model.js";
 
 export default {
@@ -366,28 +367,40 @@ export default {
       if (!fetchedUser) {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
-      const newsIndex = fetchedUser.trends_news.findIndex(
-        (t) => t.toString() === news._id.toString()
-      );
-      if (newsIndex !== -1) {
-        return res
-          .status(401)
-          .json({ success: false, msg: "You already add this to trends" });
-      }
-      const arrayLength = fetchedUser.trends_news.length;
-      if (arrayLength <= 4) {
-        fetchedUser.trends_news.push(news._id);
-        news.is_trend = true;
-        console.log("normal: ", news.trends);
-      } else {
-        fetchedUser.trends_news.shift();
-        fetchedUser.trends_news.push(news._id);
-        news.is_trend = true;
-        console.log("after shifting: ", fetchedUser.trends);
-      }
 
-      await fetchedUser.save();
-      await news.save();
+      
+
+      // const checkTrends = await Trends.find();
+
+      // const trends = new Trends();
+      // trends.username = fetchedUser.local.username;
+
+      // let newsIndex;
+      // console.log(JSON.stringify(checkTrends));
+      // if (checkTrends.length >= 1) {
+      //   const newsIndex = checkTrends.forEach(async (trend) => {
+      //     return (await trend.trends_news.toString()) === news._id.toString();
+      //   });
+      //   if (newsIndex !== -1) {
+      //     return res
+      //       .status(401)
+      //       .json({ success: false, msg: "You already add this to trends" });
+      //   }
+      // }
+
+      // const arrayLength = checkTrends.length;
+      // console.log("length: ", arrayLength);
+      // if (arrayLength <= 4) {
+      //   trends.trends_news = news._id;
+      //   news.is_trend = true;
+      // } else {
+      //   checkTrends.shift();
+      //   trends.trends_news = news._id;
+      //   news.is_trend = true;
+      // }
+
+      // await trends.save();
+      // await news.save();
       res.status(200).json({ success: true, msg: "Becomes a trend" });
     } catch (err) {
       console.log(err);
@@ -409,19 +422,20 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await User.find()
-        .select("trends_news")
-        .populate({
-          path: "trends_news",
-          model: "News",
-          populate: { path: "tag", model: "Tag" },
-        });
-      trends[1].trends_news.forEach((ele) => {
+      const trends = await Trends.find().populate({
+        path: "trends_news",
+        model: "News",
+        populate: { path: "tag", model: "Tag" },
+      });
+      trends.forEach((ele) => {
         if (ele.tag) {
-          ele.tag_name = ele.tag.tag;
+          ele.trends_news.tag_name = ele.trends_news.tag.tag;
+          console.log(JSON.stringify(ele.trends_news));
         }
       });
-      res.status(200).json(trends[1].trends_news);
+      res
+        .status(200)
+        .json(trends);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
     }
