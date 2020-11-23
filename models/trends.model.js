@@ -40,6 +40,10 @@ const trendsSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  newsId: {
+    type: ObjectId,
+    ref: "News"
+  },
   tag: {
     type: ObjectId,
     ref: "Tag",
