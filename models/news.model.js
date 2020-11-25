@@ -100,7 +100,7 @@ const newsSchema = new mongoose.Schema({
   },
   created_at: {
     type: String,
-    default: () => moment(Date.now).format("MMMM d, YYYY"),
+    default: () => moment(new Date()).format("MMMM Do YYYY"),
   },
 });
 

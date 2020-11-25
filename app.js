@@ -84,7 +84,9 @@ app.use(cors());
   next();
 });*/
 
-app.use("/images", express.static(path.join(__dirname, "images")));
+process.env.PWD = process.cwd()
+
+app.use("/images", express.static(process.env.PWD + "/images"));
 
 app.use("/api/users", userRoutes);
 

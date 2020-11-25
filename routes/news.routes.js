@@ -11,6 +11,8 @@ const MIME_TYPE_MAP = {
   "image/png": "png",
 };
 
+process.env.PWD = process.cwd()
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
@@ -18,7 +20,7 @@ const storage = multer.diskStorage({
     if (isValid) {
       error = null;
     }
-    cb(error, "images");
+    cb(error, path.join(process.env.PWD + "/images"));
   },
   filename: (req, file, cb) => {
     const name = file.originalname.toLocaleLowerCase().split(" ").join("-");
