@@ -62,6 +62,8 @@ newsRoutes.delete("/trend/:newsId", checkAuth, newsController.removeTrend);
 
 newsRoutes.get("/all-news", newsController.allNews);
 
+newsRoutes.get("/admin-news", newsController.allNews);
+
 newsRoutes.get("/all-trends", newsController.getTrendingNews);
 
 newsRoutes.get("/filtered-news", newsController.filterNewsByTag);

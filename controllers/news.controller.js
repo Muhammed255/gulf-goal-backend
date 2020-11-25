@@ -57,6 +57,8 @@ export default {
         .populate("comments.commentator")
         .populate("comments.replies.replier");
 
+      // find related based on tag_name
+
       allNews.forEach(async (ele) => {
         if (ele.tag) {
           ele.tag_name = ele.tag.tag;
@@ -76,6 +78,51 @@ export default {
       });
 
       res.status(200).json(allNews);
+      // console.log(JSON.stringify(relatedNews));
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
+
+  async admin_allNews(req, res, next) {
+    try {
+      const pageSize = +req.query.pageSize;
+      const currentPage = +req.query.page;
+      const allNews = News.find()
+        .populate({
+          path: "tag",
+          select: "tag",
+        })
+        .sort({ created_at: -1 })
+        .populate("userId")
+        .populate("related_news")
+        .populate("comments.commentator")
+        .populate("comments.replies.replier");
+
+      if (pageSize && currentPage) {
+        await allNews.skip(pageSize * (currentPage - 1)).limit(pageSize);
+      }
+      const count = await allNews.count();
+      // allNews.forEach(async (ele) => {
+      //   if (ele.tag) {
+      //     ele.tag_name = ele.tag.tag;
+      //     const filtered = await News.find({ tag_name: ele.tag.tag })
+      //       .limit(5)
+      //       .sort({ created_at: -1 });
+      //     filtered.forEach(async (filter) => {
+      //       if (ele.related_news.some((r) => r._id === filter._id)) {
+      //         return;
+      //       }
+      //       await ele.related_news.push(filter._id);
+      //       ele.populate({ path: "related_news", model: "News" });
+      //       await ele.save();
+      //       console.log(JSON.stringify(ele));
+      //     });
+      //   }
+      // });
+
+      res.status(200).json({ news: allNews, maxNews: count });
       // console.log(JSON.stringify(relatedNews));
     } catch (err) {
       console.log(err);
@@ -413,10 +460,10 @@ export default {
   async getAdminTrendingNews(req, res, next) {
     try {
       const trends = await User.find()
-        .select("trends_news")
-        .populate("trends_news");
-      console.log(JSON.stringify(trends[1].trends_news));
-      res.status(200).json(trends[1].trends_news);
+        .populate("trends_news")
+        .populate("tag")
+        .populate("userId");
+      res.status(200).json(trends);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
     }
@@ -427,8 +474,9 @@ export default {
       const trends = await Trends.find()
         .populate({
           path: "trends_news",
-          model: "News"
-        }).populate("tag")
+          model: "News",
+        })
+        .populate("tag")
         .populate("userId");
       trends.forEach((ele) => {
         if (ele.tag) {
