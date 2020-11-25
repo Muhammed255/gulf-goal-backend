@@ -66,6 +66,8 @@ newsRoutes.get("/admin-news", newsController.allNews);
 
 newsRoutes.get("/all-trends", newsController.getTrendingNews);
 
+newsRoutes.get("/admin-trends", newsController.getAdminTrendingNews);
+
 newsRoutes.get("/filtered-news", newsController.filterNewsByTag);
 
 newsRoutes.put(
