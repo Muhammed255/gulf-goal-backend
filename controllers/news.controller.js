@@ -493,7 +493,7 @@ export default {
   async removeTrend(req, res, next) {
     try {
 
-      const trend = await News.findById(req.params.trendId);
+      const trend = await Trends.findById(req.params.trendId);
       if (!trend) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
