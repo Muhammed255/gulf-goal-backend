@@ -492,20 +492,34 @@ export default {
 
   async removeTrend(req, res, next) {
     try {
-      const news = await News.findById(req.params.newsId);
+
+      const trend = await News.findById(req.params.trendId);
+      if (!trend) {
+        return res.status(401).json({ success: false, msg: "No Id provided" });
+      }
+
+      const news = await News.findOne({_id: trend.newsId});
       if (!news) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
+
+      // const trends = await Trends.find();
+      // if (!trends) {
+      //   return res.status(401).json({ success: false, msg: "No trends" });
+      // }
       const fetchedUser = await User.findOne({ _id: req.userData.userId });
       if (!fetchedUser) {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
-      const newsIndex = fetchedUser.trends_news.findIndex(
-        (t) => t.toString() === news._id.toString()
-      );
+      // const newsIndex = trends.findIndex(
+      //   (t) => t.newsId.toString() === news._id.toString()
+      // );
 
-      fetchedUser.trends_news.splice(newsIndex, 1);
-      await fetchedUser.save();
+      news.is_trend = false;
+      await news.save();
+      
+      await Trends.findOneAndDelete({_id: trend._id});
+      
       res.status(200).json({ success: true, msg: "Trend Deleted!!" });
     } catch (err) {
       res.status(500).json({ err });

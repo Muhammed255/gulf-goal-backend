@@ -11,7 +11,7 @@ const MIME_TYPE_MAP = {
   "image/png": "png",
 };
 
-process.env.PWD = process.cwd()
+process.env.PWD = process.cwd();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
