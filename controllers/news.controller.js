@@ -37,7 +37,11 @@ export default {
       if (!news) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
-
+      await News.findByIdAndUpdate(
+        req.params.newsId,
+        { $inc: { visits: 1 } },
+        { new: true }
+      );
       res.status(200).json({ news });
     } catch (err) {
       res.status(500).json(err);
@@ -127,6 +131,67 @@ export default {
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
+    }
+  },
+
+  async recentFiveNews(req, res, next) {
+    try {
+      const recent = await News.find()
+        .populate({
+          path: "tag",
+          select: "tag",
+        })
+        .sort({ created_at: -1 })
+        .populate("userId")
+        .limit(10);
+
+      res.status(200).json({ recentNews: recent });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  async mostPopularNews(req, res, next) {
+    try {
+      const popular = await News.find()
+        .populate({
+          path: "tag",
+          select: "tag",
+        })
+        .sort({ count: -1 })
+        .populate("userId")
+        .limit(10);
+
+      res.status(200).json({ recentNews: recent });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  async getRandomNews(req, res, next) {
+    try {
+      const count = await News.count();
+      const random = Math.floor(Math.random() * count);
+      const newsQuery = await News.find().skip(random).limit(5).exec();
+      res.status(200).json({ randomNews: newsQuery });
+    } catch (err) {
+      res.status(500).json({ err });
+    }
+  },
+
+  async filterNewsByTagName(req, res, next) {
+    try {
+      const news = await News.find({ tag: req.params.tagId })
+        .populate("userId")
+        .populate("tag");
+      if (!news) {
+        res
+          .status(400)
+          .json({ success: false, msg: "No News Found for this tag" });
+      }
+      res.status(200).json({ filteredNews: news });
+    } catch (err) {
+      res.status(500).json({ err });
     }
   },
 
@@ -492,13 +557,12 @@ export default {
 
   async removeTrend(req, res, next) {
     try {
-
       const trend = await Trends.findById(req.params.trendId);
       if (!trend) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
 
-      const news = await News.findOne({_id: trend.newsId});
+      const news = await News.findOne({ _id: trend.newsId });
       if (!news) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
@@ -517,9 +581,9 @@ export default {
 
       news.is_trend = false;
       await news.save();
-      
-      await Trends.findOneAndDelete({_id: trend._id});
-      
+
+      await Trends.findOneAndDelete({ _id: trend._id });
+
       res.status(200).json({ success: true, msg: "Trend Deleted!!" });
     } catch (err) {
       res.status(500).json({ err });

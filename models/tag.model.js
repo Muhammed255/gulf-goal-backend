@@ -12,6 +12,10 @@ var tagSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  visits: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export default mongoose.model("Tag", tagSchema);

@@ -102,6 +102,10 @@ const newsSchema = new mongoose.Schema({
     type: String,
     default: () => moment(new Date()).format("MMMM Do YYYY"),
   },
+  visits: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export default mongoose.model("News", newsSchema);

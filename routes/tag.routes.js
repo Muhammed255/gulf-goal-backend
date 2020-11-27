@@ -9,6 +9,8 @@ tagRoutes.post("/add-tag", checkAuth, tagController.addNewTag);
 
 tagRoutes.get("/all-tags", tagController.getAllTags);
 
+tagRoutes.get("/popular-tags", tagController.getPopularTags);
+
 tagRoutes
   .route("/:tagId")
   .get(checkAuth, tagController.findOneTag)

@@ -64,6 +64,10 @@ newsRoutes.delete("/trend/:newsId", checkAuth, newsController.removeTrend);
 
 newsRoutes.get("/all-news", newsController.allNews);
 
+newsRoutes.get("/get-recent-news", newsController.recentFiveNews);
+
+newsRoutes.get("/get-random-news", newsController.getRandomNews);
+
 newsRoutes.get("/admin-news", newsController.admin_allNews);
 
 newsRoutes.get("/all-trends", newsController.getTrendingNews);
@@ -71,6 +75,8 @@ newsRoutes.get("/all-trends", newsController.getTrendingNews);
 newsRoutes.get("/admin-trends", newsController.getAdminTrendingNews);
 
 newsRoutes.get("/filtered-news", newsController.filterNewsByTag);
+
+newsRoutes.get("/filtered-news/:newsId", newsController.filterNewsByTagName);
 
 newsRoutes.put(
   "/add-to-favorites/:newsId",

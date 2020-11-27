@@ -24,6 +24,11 @@ export default {
           .status(401)
           .json({ success: false, msg: "Can not find tag" });
       }
+      await Tag.findByIdAndUpdate(
+        req.params.tagId,
+        { $inc: { visits: 1 } },
+        { new: true }
+      );
       res.status(200).json({ success: true, msg: "fetched", tag: tagToFind });
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
@@ -33,6 +38,15 @@ export default {
   async getAllTags(req, res, next) {
     try {
       const tags = await Tag.find().populate("userId");
+      res.status(200).json({ success: true, msg: "tags fetched", tags });
+    } catch (err) {
+      res.status(500).json({ success: false, msg: err });
+    }
+  },
+
+  async getPopularTags(req, res, next) {
+    try {
+      const tags = await Tag.find().sort({visits: -1}).limit(8);
       res.status(200).json({ success: true, msg: "tags fetched", tags });
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
