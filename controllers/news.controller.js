@@ -89,49 +89,35 @@ export default {
     }
   },
 
-  async admin_allNews(req, res, next) {
-    try {
-      const pageSize = +req.query.pageSize;
-      const currentPage = +req.query.page;
-      const allNews = News.find()
-        .populate({
-          path: "tag",
-          select: "tag",
-        })
-        .sort({ created_at: -1 })
-        .populate("userId")
-        .populate("related_news")
-        .populate("comments.commentator")
-        .populate("comments.replies.replier");
+  admin_allNews(req, res, next) {
+    const pageSize = +req.query.pageSize;
+    const currentPage = +req.query.page;
+    const allNews = News.find()
+      .populate({
+        path: "tag",
+        select: "tag",
+      })
+      .sort({ created_at: -1 })
+      .populate("userId")
+      .populate("related_news")
+      .populate("comments.commentator")
+      .populate("comments.replies.replier");
 
-      if (pageSize && currentPage) {
-        await allNews.skip(pageSize * (currentPage - 1)).limit(pageSize);
-      }
-      const count = await allNews.count();
-      // allNews.forEach(async (ele) => {
-      //   if (ele.tag) {
-      //     ele.tag_name = ele.tag.tag;
-      //     const filtered = await News.find({ tag_name: ele.tag.tag })
-      //       .limit(5)
-      //       .sort({ created_at: -1 });
-      //     filtered.forEach(async (filter) => {
-      //       if (ele.related_news.some((r) => r._id === filter._id)) {
-      //         return;
-      //       }
-      //       await ele.related_news.push(filter._id);
-      //       ele.populate({ path: "related_news", model: "News" });
-      //       await ele.save();
-      //       console.log(JSON.stringify(ele));
-      //     });
-      //   }
-      // });
-
-      res.status(200).json({ news: allNews, maxNews: count });
-      // console.log(JSON.stringify(relatedNews));
-    } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
+    let fetchedNews;
+    if (pageSize && currentPage) {
+      allNews.skip(pageSize * (currentPage - 1)).limit(pageSize);
     }
+    allNews
+      .then((news) => {
+        fetchedNews = news;
+        return News.countDocuments();
+      })
+      .then((count) => {
+        res.json({ news: fetchedNews, maxNews: count });
+      })
+      .catch((err) => {
+        res.status(500).json({ err });
+      });
   },
 
   async recentFiveNews(req, res, next) {
@@ -143,7 +129,7 @@ export default {
         })
         .sort({ created_at: -1 })
         .populate("userId")
-        .limit(10);
+        .limit(7);
 
       res.status(200).json({ recentNews: recent });
     } catch (err) {
@@ -508,7 +494,7 @@ export default {
         trends.trends_news = news._id;
         news.is_trend = true;
       } else {
-        checkTrends.shift();
+        await Trends.findOneAndDelete({_id: checkTrends[0]._id});
         trends.trends_news = news._id;
         news.is_trend = true;
       }
