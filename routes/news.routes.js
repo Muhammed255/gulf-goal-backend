@@ -60,7 +60,7 @@ newsRoutes.post("/dislike-news", checkAuth, newsController.dislikeNew);
 
 newsRoutes.post("/trend/:newsId", checkAuth, newsController.makeNewsTrend);
 
-newsRoutes.delete("/trend/:newsId", checkAuth, newsController.removeTrend);
+newsRoutes.delete("/trend/:trendId", checkAuth, newsController.removeTrend);
 
 newsRoutes.get("/all-news", newsController.allNews);
 
