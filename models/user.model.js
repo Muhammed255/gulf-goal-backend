@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 import uniqueValidator from "mongoose-unique-validator";
 
+import moment from "moment";
+
 const ObjectId = mongoose.Types.ObjectId;
 
 // Declare the Schema of the Mongo model

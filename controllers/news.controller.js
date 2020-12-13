@@ -2,6 +2,12 @@ import News from "../models/news.model.js";
 import Trends from "../models/trends.model.js";
 import User from "../models/user.model.js";
 
+
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 export default {
   async addNews(req, res, next) {
     try {
@@ -18,7 +24,7 @@ export default {
       const news = new News({
         title,
         content,
-        image: url + "/images/" + req.file.filename,
+        image: fs.readFileSync(path.join(__dirname, "../", req.file.path)),
         userId: req.userData.userId,
         teamId,
         tag,
@@ -144,11 +150,11 @@ export default {
           path: "tag",
           select: "tag",
         })
-        .sort({ count: -1 })
+        .sort({ visits: -1 })
         .populate("userId")
         .limit(10);
 
-      res.status(200).json({ recentNews: recent });
+      res.status(200).json({ recentNews: popular });
     } catch (err) {
       res.status(500).json(err);
     }

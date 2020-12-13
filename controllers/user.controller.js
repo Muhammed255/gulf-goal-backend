@@ -1,3 +1,4 @@
+import fs from "fs";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -5,6 +6,12 @@ import sgMail from "@sendgrid/mail";
 import { appConfig } from "../middleware/app-config.js";
 import ResetToken from "../models/reset-token.model.js";
 import User from "../models/user.model.js";
+
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 export default {
   async signup(req, res, next) {
@@ -162,6 +169,7 @@ export default {
         success: true,
         username: checkEmail.local.username,
         token,
+        image: checkEmail.image
       });
     } catch (err) {
       res.status(500).json({ success: false, msg: "هناك خطأ ما....." });
@@ -374,10 +382,9 @@ export default {
       if (!authUser) {
         return res.status(400).json({ success: false, msg: "Unauthorized!" });
       }
-      const url = "https://gulf-goal.herokuapp.com";
-      let imagePath = req.body.image;
+      let imagePath = fs.readFileSync(path.join(__dirname, "../", req.file.path));
       if (req.file) {
-        imagePath = url + "/images/" + req.file.filename;
+        imagePath = fs.readFileSync(path.join(__dirname, "../", req.file.path));
       }
       await User.findOneAndUpdate(
         { _id: req.userData.userId },
