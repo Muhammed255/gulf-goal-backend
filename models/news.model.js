@@ -33,7 +33,7 @@ const newsSchema = new mongoose.Schema({
     required: true,
   },
   image: {
-    type: Buffer,
+    type: String,
     default: null,
   },
   userId: {
