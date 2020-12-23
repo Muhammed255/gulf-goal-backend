@@ -59,7 +59,7 @@ export default {
     try {
       const news = await News.findById(req.params.newsId)
         .populate("comments.commentator", "local.username image")
-        .populated("comments.replies.replier", "local.username image");
+        .populate("comments.replies.replier", "local.username image");
       if (!news) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
