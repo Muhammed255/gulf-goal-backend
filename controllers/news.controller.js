@@ -57,8 +57,16 @@ export default {
 
   newsComments(req, res, next) {
     News.findById(req.params.newsId)
-      .populate("comments.commentator", "local.username image")
-      .populate("comments.replies.replier", "local.username image")
+      .populate({
+        path: "comments.commentator",
+        model: "User",
+        select: "local.username, image",
+      })
+      .populate({
+        path: "comments.replies.replier",
+        model: "User",
+        select: "local.username, image",
+      })
       .then((news) => {
         if (!news) {
           res.status(401).json({ success: false, msg: "Can not find news" });
