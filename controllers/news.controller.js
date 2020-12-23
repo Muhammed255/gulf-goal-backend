@@ -60,7 +60,7 @@ export default {
       .populate({
         path: "comments.commentator",
         model: "User",
-        select: "local.username, image",
+        select: "local, image, -local.password, -local.email",
       })
       .populate({
         path: "comments.replies.replier",
