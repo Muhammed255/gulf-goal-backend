@@ -88,10 +88,10 @@ export default {
           select: "tag",
         })
         .sort({ created_at: -1 })
+        .populate("userId")
         .populate("related_news")
-        .select(
-          "title content image tag likedBy likes -userId -related_news -comments"
-        );
+        .populate("comments.commentator")
+        .populate("comments.replies.replier");
 
       // find related based on tag_name
 
