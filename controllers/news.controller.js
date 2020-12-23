@@ -89,7 +89,7 @@ export default {
         })
         .sort({ created_at: -1 })
         .select(
-          "title content image likedBy likes -userId -related_news -comments"
+          "title content image likedBy likes -userId -comments"
         );
 
       // find related based on tag_name
