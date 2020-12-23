@@ -60,7 +60,7 @@ const newsSchema = new mongoose.Schema({
       commentator: { type: ObjectId, ref: "User" },
       comment_date: {
         type: String,
-        default: () => moment(new Date()).format("MMMM Do YYYY"),
+        default: () =>moment(new Date.now()).format("YYYY-MM-DD"),
       },
       replies: [
         {
@@ -68,7 +68,7 @@ const newsSchema = new mongoose.Schema({
           replier: { type: ObjectId, ref: "User" },
           reply_date: {
             type: String,
-            default: () => moment(new Date()).format("MMMM Do YYYY"),
+            default: () => moment(new Date.now()).format("YYYY-MM-DD"),
           },
         },
       ],
