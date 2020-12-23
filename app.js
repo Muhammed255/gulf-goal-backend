@@ -85,7 +85,7 @@ app.use(cors());
   next();
 });*/
 
-process.env.PWD = process.cwd()
+process.env.PWD = process.cwd();
 
 app.use("/images", express.static(process.env.PWD + "/images"));
 

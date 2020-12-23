@@ -52,6 +52,8 @@ newsRoutes.post(
 
 newsRoutes.post("/add-comment", checkAuth, newsController.commentNews);
 
+newsRoutes.get("/get-comments", newsController.newsComments);
+
 newsRoutes.post("/do-reply", checkAuth, newsController.newsCommentReply);
 
 newsRoutes.post("/like-news", checkAuth, newsController.likeNew);

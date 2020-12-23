@@ -1,7 +1,8 @@
+import fs from "fs";
+import path from "path";
 import News from "../models/news.model.js";
 import Trends from "../models/trends.model.js";
 import User from "../models/user.model.js";
-
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -24,7 +25,7 @@ export default {
       const news = new News({
         title,
         content,
-        image: fs.readFileSync(path.join(__dirname, "../", req.file.path)),
+        image: url + "/images/" + req.file.filename,
         userId: req.userData.userId,
         teamId,
         tag,
@@ -54,6 +55,23 @@ export default {
     }
   },
 
+  async newsComments(req, res, next) {
+    try {
+      const news = await News.findById(req.params.newsId)
+        .populate("comments.commentator", "local.username image")
+        .populated("comments.replies.replier", "local.username image");
+      if (!news) {
+        res.status(401).json({ success: false, msg: "Can not find news" });
+      }
+
+      res
+        .status(200)
+        .json({ success: true, msg: "Comments Fetched", news: news });
+    } catch (err) {
+      res.status(500).json({ err: "Error Occured: " + err });
+    }
+  },
+
   async allNews(req, res, next) {
     try {
       const allNews = await News.find()
@@ -65,7 +83,10 @@ export default {
         .populate("userId")
         .populate("related_news")
         .populate("comments.commentator")
-        .populate("comments.replies.replier");
+        .populate("comments.replies.replier")
+        .select(
+          "title content image tag likedBy likes -userId -related_news -comments"
+        );
 
       // find related based on tag_name
 
@@ -500,7 +521,7 @@ export default {
         trends.trends_news = news._id;
         news.is_trend = true;
       } else {
-        await Trends.findOneAndDelete({_id: checkTrends[0]._id});
+        await Trends.findOneAndDelete({ _id: checkTrends[0]._id });
         trends.trends_news = news._id;
         news.is_trend = true;
       }
