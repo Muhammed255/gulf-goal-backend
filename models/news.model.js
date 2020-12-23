@@ -58,12 +58,18 @@ const newsSchema = new mongoose.Schema({
     {
       comment: { type: String, validate: commentValidator },
       commentator: { type: ObjectId, ref: "User" },
-      comment_date: { type: Date, default: Date.now },
+      comment_date: {
+        type: String,
+        default: () => moment(new Date()).format("MMMM Do YYYY"),
+      },
       replies: [
         {
           reply: { type: String, validate: commentValidator },
           replier: { type: ObjectId, ref: "User" },
-          reply_date: { type: Date, ref: "User" },
+          reply_date: {
+            type: String,
+            default: () => moment(new Date()).format("MMMM Do YYYY"),
+          },
         },
       ],
     },
