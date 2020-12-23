@@ -66,7 +66,7 @@ export default {
         path: "comments.replies.replier",
         model: "User",
         select: "local.username, image",
-      })
+      }).select("comments")
       .then((news) => {
         if (!news) {
           res.status(401).json({ success: false, msg: "Can not find news" });
