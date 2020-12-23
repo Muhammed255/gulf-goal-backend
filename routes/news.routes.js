@@ -52,7 +52,7 @@ newsRoutes.post(
 
 newsRoutes.post("/add-comment", checkAuth, newsController.commentNews);
 
-newsRoutes.get("/get-comments", newsController.newsComments);
+newsRoutes.get("/get-comments/:newsId", newsController.newsComments);
 
 newsRoutes.post("/do-reply", checkAuth, newsController.newsCommentReply);
 

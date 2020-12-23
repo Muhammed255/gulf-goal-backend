@@ -55,21 +55,21 @@ export default {
     }
   },
 
-  async newsComments(req, res, next) {
-    try {
-      const news = await News.findById(req.params.newsId)
-        .populate("comments.commentator", "local.username image")
-        .populate("comments.replies.replier", "local.username image");
-      if (!news) {
-        res.status(401).json({ success: false, msg: "Can not find news" });
-      }
-
-      res
-        .status(200)
-        .json({ success: true, msg: "Comments Fetched", news: news });
-    } catch (err) {
-      res.status(500).json({ err: "Error Occured: " + err });
-    }
+  newsComments(req, res, next) {
+    News.findById(req.params.newsId)
+      .populate("comments.commentator", "local.username image")
+      .populate("comments.replies.replier", "local.username image")
+      .then((news) => {
+        if (!news) {
+          res.status(401).json({ success: false, msg: "Can not find news" });
+        }
+        res
+          .status(200)
+          .json({ success: true, msg: "Comments Fetched", news: news });
+      })
+      .catch((err) => {
+        res.status(500).json({ err: "Error Occured: " + err });
+      });
   },
 
   async allNews(req, res, next) {
