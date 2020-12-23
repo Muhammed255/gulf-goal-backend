@@ -60,12 +60,12 @@ export default {
       .populate({
         path: "comments.commentator",
         model: "User",
-        select: "local, image, -local.password, -local.email",
+        select: "local.username image",
       })
       .populate({
         path: "comments.replies.replier",
         model: "User",
-        select: "local.username, image",
+        select: "local.username image",
       }).select("comments -_id")
       .then((news) => {
         if (!news) {
