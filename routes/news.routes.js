@@ -52,8 +52,6 @@ newsRoutes.post(
 
 newsRoutes.post("/add-comment", checkAuth, newsController.commentNews);
 
-newsRoutes.get("/get-comments/:newsId", newsController.newsComments);
-
 newsRoutes.post("/do-reply", checkAuth, newsController.newsCommentReply);
 
 newsRoutes.post("/like-news", checkAuth, newsController.likeNew);
@@ -79,6 +77,8 @@ newsRoutes.get("/admin-trends", newsController.getAdminTrendingNews);
 newsRoutes.get("/filtered-news", newsController.filterNewsByTag);
 
 newsRoutes.get("/filtered-news/:newsId", newsController.filterNewsByTagName);
+
+newsRoutes.get("/get-comments/:newsId", newsController.newsComments);
 
 newsRoutes.put(
   "/add-to-favorites/:newsId",

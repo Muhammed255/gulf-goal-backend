@@ -12,6 +12,18 @@ teamsRoutes.post(
 );
 
 teamsRoutes.post(
+  "/add-match-comment",
+  checkAuth,
+  teamsController.matchesComment
+);
+
+teamsRoutes.post(
+  "/do-match-reply",
+  checkAuth,
+  teamsController.matchesCommentReply
+);
+
+teamsRoutes.post(
   "/remove-team-to-favorites",
   checkAuth,
   teamsController.removeFromFavorites
@@ -19,6 +31,16 @@ teamsRoutes.post(
 
 teamsRoutes.get("/all-favorites", checkAuth, teamsController.getFavorites);
 
-teamsRoutes.get("/following-live-matches", checkAuth, teamsController.getFollowingLiveMatches);
+teamsRoutes.get("/get-matches-comments", teamsController.getMatchComments);
 
-teamsRoutes.get("/following-coming-matches/:selectedDate", checkAuth, teamsController.getFollowingNextMatches);
+teamsRoutes.get(
+  "/following-live-matches",
+  checkAuth,
+  teamsController.getFollowingLiveMatches
+);
+
+teamsRoutes.get(
+  "/following-coming-matches/:selectedDate",
+  checkAuth,
+  teamsController.getFollowingNextMatches
+);

@@ -2,6 +2,7 @@ import Axios from "axios";
 import { appConfig } from "../middleware/app-config.js";
 import { footballPi } from "../middleware/football-api.js";
 import User from "../models/user.model.js";
+import Match from "../models/match.model.js";
 
 export default {
   async addTeamsToFavorites(req, res, next) {
@@ -92,8 +93,10 @@ export default {
         });
       });
 
-      if(result.length < 1) {
-        res.status(200).json({success: false, msg: "لا يوجد مبارايات الان !!!"});
+      if (result.length < 1) {
+        res
+          .status(200)
+          .json({ success: false, msg: "لا يوجد مبارايات الان !!!" });
       }
 
       res.status(200).json({
@@ -126,8 +129,10 @@ export default {
         });
       });
 
-      if(result.length < 1) {
-        res.status(200).json({success: false, msg: "لا توجد مبارايات اليوم !!!"});
+      if (result.length < 1) {
+        res
+          .status(200)
+          .json({ success: false, msg: "لا توجد مبارايات اليوم !!!" });
       }
 
       res.status(200).json({
@@ -140,4 +145,108 @@ export default {
       res.status(500).json({ err });
     }
   },
+
+  async matchesComment(req, res, next) {
+    try {
+      if (!req.body.match_id) {
+        return res.status(401).json({ success: false, msg: "No Id provided" });
+      }
+
+      if (!req.body.comment) {
+        return res
+          .status(401)
+          .json({ success: false, msg: "No comment provided" });
+      }
+
+      const newMatch = new Match();
+
+      const authUser = await User.findOne({ _id: req.userData.userId });
+      if (!authUser) {
+        res.status(401).json({ success: false, msg: "Unautherized..." });
+      }
+
+      newMatch.comments.push({
+        comment: req.body.comment,
+        commentator: req.userData.userId,
+      });
+      newMatch.match_id = req.body.match_id;
+      await newMatch.save();
+
+      res.status(200).json({ success: true, msg: "Comment added on Match" });
+    } catch (err) {
+      res.status(500).json({ err });
+    }
+  },
+
+  async getMatchComments(req, res, next) {
+    try {
+      const foundMatch = await Match.findOne({ match_id: req.body.match_id })
+        .populate({
+          path: "comments.commentator",
+          model: "User",
+          select: "local.username image",
+        })
+        .populate({
+          path: "comments.replies.replier",
+          model: "User",
+          select: "local.username image",
+        })
+        .select("comments -_id");
+      if (!foundMatch) {
+        return res.status(400).json({ success: false, msg: "No Match Found" });
+      }
+      res
+        .status(200)
+        .json({
+          success: true,
+          msg: "Match Comments Fetched!",
+          comments: foundMatch.comments,
+        });
+    } catch (err) {
+      res.status(500).json({success: false, msg: "Error: " + err});
+      return next(new Error(err));
+    }
+  },
+
+  async matchesCommentReply(req, res, next) {
+    try {
+      if (!req.body.match_id) {
+        return res.status(401).json({ success: false, msg: "No Id provided" });
+      }
+
+      if (!req.body.reply) {
+        return res
+          .status(401)
+          .json({ success: false, msg: "No reply provided" });
+      }
+
+      const newsToReply = await Match.findOne({ match_id: req.body.match_id });
+      if (!newsToReply) {
+        res.status(401).json({ success: false, msg: "Can not find match with this id" });
+      }
+
+      const authUser = await User.findOne({ _id: req.userData.userId });
+      if (!authUser) {
+        res.status(401).json({ success: false, msg: "Unautherized..." });
+      }
+
+      const replyData = {
+        "comments.$.replies": {
+          reply: req.body.reply,
+          replier: req.userData.userId,
+        },
+      };
+
+      await Match.findOneAndUpdate(
+        { match_id: req.body.match_id, "comments._id": req.body.commentId },
+        { $addToSet: replyData },
+        { new: true, upsert: true }
+      );
+
+      res.status(200).json({ success: true, msg: "Reply to match added" });
+    } catch (err) {
+      res.status(500).json({ err });
+    }
+  }
+
 };

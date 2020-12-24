@@ -66,14 +66,17 @@ export default {
         path: "comments.replies.replier",
         model: "User",
         select: "local.username image",
-      }).select("comments -_id")
+      })
+      .select("comments -_id")
       .then((news) => {
         if (!news) {
           res.status(401).json({ success: false, msg: "Can not find news" });
         }
-        res
-          .status(200)
-          .json({ success: true, msg: "Comments Fetched", comments: news.comments });
+        res.status(200).json({
+          success: true,
+          msg: "Comments Fetched",
+          comments: news.comments,
+        });
       })
       .catch((err) => {
         res.status(500).json({ err: "Error Occured: " + err });
