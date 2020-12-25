@@ -298,11 +298,6 @@ export default {
           .json({ success: false, msg: "You Can not like your news" });
       }
 
-      if (newsToLike.likedBy.includes(authUser._id)) {
-        res
-          .status(401)
-          .json({ success: false, msg: "You Already liked this news" });
-      }
 
       if (newsToLike.likedBy.includes(authUser._id)) {
         newsToLike.likes--;
