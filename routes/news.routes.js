@@ -58,6 +58,8 @@ newsRoutes.post("/like-news", checkAuth, newsController.likeNew);
 
 newsRoutes.post("/dislike-news", checkAuth, newsController.dislikeNew);
 
+newsRoutes.post("/like-comment", checkAuth, newsController.likeNewsComment);
+
 newsRoutes.post("/trend/:newsId", checkAuth, newsController.makeNewsTrend);
 
 newsRoutes.delete("/trend/:trendId", checkAuth, newsController.removeTrend);

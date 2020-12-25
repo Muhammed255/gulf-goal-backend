@@ -178,11 +178,54 @@ export default {
     }
   },
 
+  async likeMatchComment(req, res, next) {
+    try {
+      if (!req.body.match_id) {
+        return res.status(401).json({ success: false, msg: "No Id provided" });
+      }
+
+      const fetchedMatch = await Match.findOne({ match_id: req.body.match_id, "comments._id": req.body.commentId });
+      if (!fetchedMatch) {
+        res.status(401).json({ success: false, msg: "Can not find news" });
+      }
+
+      const authUser = await User.findOne({ _id: req.userData.userId });
+      if (!authUser) {
+        res.status(401).json({ success: false, msg: "Unautherized..." });
+      }
+
+      for (const comment of fetchedMatch.comments) {
+        if (comment.likedBy.includes(authUser._id)) {
+          comment.likes--;
+          const arrayIndex = comment.likedBy.indexOf(authUser._id);
+          comment.likedBy.splice(arrayIndex, 1);
+          await fetchedMatch.save();
+          res
+            .status(200)
+            .json({ success: true, msg: "Like Removed!!" });
+        } else {
+          comment.likes++;
+          comment.likedBy.push(authUser._id);
+          await fetchedMatch.save();
+          res.status(200).json({ success: true, msg: "Comment liked!!" });
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ err });
+    }
+  },
+
   async getMatchComments(req, res, next) {
     try {
       const foundMatch = await Match.findOne({ match_id: req.body.match_id })
         .populate({
           path: "comments.commentator",
+          model: "User",
+          select: "local.username image",
+        })
+        .populate({
+          path: "comments.likedBy",
           model: "User",
           select: "local.username image",
         })

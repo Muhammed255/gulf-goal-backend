@@ -4,10 +4,10 @@ import News from "../models/news.model.js";
 import Trends from "../models/trends.model.js";
 import User from "../models/user.model.js";
 
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+//import { dirname } from "path";
+//import { fileURLToPath } from "url";
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = dirname(__filename);
 
 export default {
   async addNews(req, res, next) {
@@ -115,6 +115,8 @@ export default {
           });
         }
       });
+
+      // const newsToSend = await allNews.select("title content comments image likedBy likes -related_news -visits -userId");
 
       res.status(200).json(allNews);
       // console.log(JSON.stringify(relatedNews));
@@ -321,6 +323,43 @@ export default {
     }
   },
 
+  async likeNewsComment(req, res, next) {
+    try {
+      if (!req.body.newsId) {
+        return res.status(401).json({ success: false, msg: "No Id provided" });
+      }
+
+      const fetchedNews = await News.findOne({ _id: req.body.newsId, "comments._id": req.body.commentId });
+      if (!fetchedNews) {
+        res.status(401).json({ success: false, msg: "Can not find news" });
+      }
+
+      const authUser = await User.findOne({ _id: req.userData.userId });
+      if (!authUser) {
+        res.status(401).json({ success: false, msg: "Unautherized..." });
+      }
+
+      for (const comment of fetchedNews.comments) {
+        if (comment.likedBy.includes(authUser._id)) {
+          comment.likes--;
+          const arrayIndex = comment.likedBy.indexOf(authUser._id);
+          comment.likedBy.splice(arrayIndex, 1);
+          await fetchedNews.save();
+          res
+            .status(200)
+            .json({ success: true, msg: "Like Removed!!" });
+        } else {
+          comment.likes++;
+          comment.likedBy.push(authUser._id);
+          await fetchedNews.save();
+          res.status(200).json({ success: true, msg: "Comment liked!!" });
+        }
+      }
+    } catch (err) {
+      res.status(500).json({ err });
+    }
+  },
+
   async dislikeNew(req, res, next) {
     try {
       if (!req.body.newsId) {
@@ -405,7 +444,8 @@ export default {
 
   async newsCommentReply(req, res, next) {
     try {
-      if (!req.body.newsId) {
+      const newsId = req.body.newsId;
+      if (!newsId) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
 
@@ -415,10 +455,12 @@ export default {
           .json({ success: false, msg: "No reply provided" });
       }
 
-      const newsToReply = await News.findOne({ _id: req.body.newsId });
+      const newsToReply = await News.findOne({ _id: newsId });
       if (!newsToReply) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
+
+      
 
       const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
@@ -431,15 +473,16 @@ export default {
           replier: req.userData.userId,
         },
       };
-
-      await News.findOneAndUpdate(
-        { _id: req.body.newsId, "comments._id": req.body.commentId },
-        { $addToSet: replyData },
-        { new: true, upsert: true }
+      
+      await News.updateOne(
+        { _id: newsId, "comments._id": req.body.commentId },
+        { $push: replyData },
+        { new: true }
       );
-
+      
       res.status(200).json({ success: true, msg: "Reply added" });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ err });
     }
   },

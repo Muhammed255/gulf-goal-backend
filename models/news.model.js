@@ -62,13 +62,23 @@ const newsSchema = new mongoose.Schema({
         type: String,
         default: () =>moment().format("lll"),
       },
+      likedBy: [
+        {
+          type: ObjectId,
+          ref: "User",
+        },
+      ],
+      likes: {
+        type: Number,
+        default: 0,
+      },
       replies: [
         {
           reply: { type: String, validate: commentValidator },
           replier: { type: ObjectId, ref: "User" },
           reply_date: {
             type: String,
-            default: () => moment(new Date.now()).format("lll"),
+            default: () => moment().format("lll"),
           },
         },
       ],
@@ -87,17 +97,7 @@ const newsSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  dislikedBy: [
-    {
-      type: ObjectId,
-      ref: "User",
-    },
-  ],
   likes: {
-    type: Number,
-    default: 0,
-  },
-  dislikes: {
     type: Number,
     default: 0,
   },
@@ -106,7 +106,7 @@ const newsSchema = new mongoose.Schema({
   },
   created_at: {
     type: String,
-    default: () => moment(new Date()).format("MMMM Do YYYY"),
+    default: () => moment().format("lll"),
   },
   visits: {
     type: Number,

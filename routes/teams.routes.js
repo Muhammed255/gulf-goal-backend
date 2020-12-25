@@ -29,6 +29,12 @@ teamsRoutes.post(
   teamsController.removeFromFavorites
 );
 
+teamsRoutes.post("/match-comment", checkAuth, teamsController.matchesComment);
+
+teamsRoutes.post("/like-match-comment", checkAuth, teamsController.likeMatchComment);
+
+teamsRoutes.post("/match-comment-reply", checkAuth, teamsController.matchesCommentReply);
+
 teamsRoutes.get("/all-favorites", checkAuth, teamsController.getFavorites);
 
 teamsRoutes.get("/get-matches-comments", teamsController.getMatchComments);
