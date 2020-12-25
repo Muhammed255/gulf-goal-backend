@@ -37,7 +37,7 @@ teamsRoutes.post("/match-comment-reply", checkAuth, teamsController.matchesComme
 
 teamsRoutes.get("/all-favorites", checkAuth, teamsController.getFavorites);
 
-teamsRoutes.get("/get-matches-comments", teamsController.getMatchComments);
+teamsRoutes.get("/get-match-comments", teamsController.getMatchComments);
 
 teamsRoutes.get(
   "/following-live-matches",

@@ -186,7 +186,7 @@ export default {
 
       const fetchedMatch = await Match.findOne({ match_id: req.body.match_id, "comments._id": req.body.commentId });
       if (!fetchedMatch) {
-        res.status(401).json({ success: false, msg: "Can not find news" });
+        res.status(401).json({ success: false, msg: "Can not find Match" });
       }
 
       const authUser = await User.findOne({ _id: req.userData.userId });
@@ -202,12 +202,12 @@ export default {
           await fetchedMatch.save();
           res
             .status(200)
-            .json({ success: true, msg: "Like Removed!!" });
+            .json({ success: true, msg: "Like on match comment Removed!!" });
         } else {
           comment.likes++;
           comment.likedBy.push(authUser._id);
           await fetchedMatch.save();
-          res.status(200).json({ success: true, msg: "Comment liked!!" });
+          res.status(200).json({ success: true, msg: "Comment on match liked!!" });
         }
       }
     } catch (err) {

@@ -304,14 +304,12 @@ export default {
           .json({ success: false, msg: "You Already liked this news" });
       }
 
-      if (newsToLike.dislikedBy.includes(authUser._id)) {
-        newsToLike.dislikes--;
-        const arrayIndex = newsToLike.dislikedBy.indexOf(authUser._id);
-        newsToLike.dislikedBy.splice(arrayIndex, 1);
-        newsToLike.likes++;
-        newsToLike.likedBy.push(authUser._id);
+      if (newsToLike.likedBy.includes(authUser._id)) {
+        newsToLike.likes--;
+        const arrayIndex = newsToLike.likedBy.indexOf(authUser._id);
+        newsToLike.likedBy.splice(arrayIndex, 1);
         await newsToLike.save();
-        res.status(401).json({ success: true, msg: "News liked" });
+        res.status(401).json({ success: true, msg: "News liked removed" });
       } else {
         newsToLike.likes++;
         newsToLike.likedBy.push(authUser._id);
