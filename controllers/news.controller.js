@@ -598,11 +598,7 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await Trends.find()
-        .populate({
-          path: "trends_news",
-          model: "News",
-        })
+      const trends = await News.find({is_trend: true})
         .populate("tag")
         .populate("userId");
       trends.forEach((ele) => {
