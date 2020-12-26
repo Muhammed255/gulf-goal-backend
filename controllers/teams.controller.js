@@ -218,7 +218,7 @@ export default {
 
   async getMatchComments(req, res, next) {
     try {
-      const foundMatch = await Match.findOne({ match_id: req.body.match_id })
+      const foundMatch = await Match.findOne({ match_id: req.params.matchId })
         .populate({
           path: "comments.commentator",
           model: "User",
