@@ -332,7 +332,8 @@ export default {
         res.status(401).json({ success: false, msg: "Unautherized..." });
       }
 
-      for (const comment of fetchedNews.comments) {
+      for (let ele = 0; ele < fetchedNews.comments.length; ele++) {
+        const comment = fetchedNews.comments[ele];
         if (comment.likedBy.includes(authUser._id)) {
           comment.likes--;
           const arrayIndex = comment.likedBy.indexOf(authUser._id);
@@ -350,6 +351,25 @@ export default {
           res.status(200).json({ success: true, msg: "Comment liked!!" });
         }
       }
+
+      // for (const comment of fetchedNews.comments) {
+      //   if (comment.likedBy.includes(authUser._id)) {
+      //     comment.likes--;
+      //     const arrayIndex = comment.likedBy.indexOf(authUser._id);
+      //     if(arrayIndex > -1) {
+      //       comment.likedBy.splice(arrayIndex, 1);
+      //     }
+      //     await fetchedNews.save();
+      //     res
+      //       .status(200)
+      //       .json({ success: true, msg: "Like Removed!!" });
+      //   } else {
+      //     comment.likes++;
+      //     comment.likedBy.push(authUser._id);
+      //     await fetchedNews.save();
+      //     res.status(200).json({ success: true, msg: "Comment liked!!" });
+      //   }
+      // }
     } catch (err) {
       res.status(500).json({ err });
     }
