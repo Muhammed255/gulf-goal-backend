@@ -52,6 +52,7 @@ export default {
         msg: "تم التسجيل بنجاح ...",
         token,
         username: user.local.username,
+        userId: user._id
       });
     } catch (err) {
       console.log(err);
