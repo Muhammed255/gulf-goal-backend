@@ -23,7 +23,7 @@ export default {
       const authUser = await User.findOne({ "local.email": email });
       if (authUser) {
         return res.status(401).json({
-          msg: "المستخدم موجود بالفعل!!",
+          msg: "Email already exists",
           success: false,
         });
       }
@@ -49,14 +49,14 @@ export default {
       );
       res.status(200).json({
         success: true,
-        msg: "تم التسجيل بنجاح ...",
+        msg: "Successfully Registered",
         token,
         username: user.local.username,
         userId: user._id
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ success: false, msg: "هناك خطأ ما...." });
+      return res.status(500).json({ success: false, msg: "Error Occured !!" });
     }
   },
 
@@ -148,13 +148,13 @@ export default {
       if (!checkEmail) {
         return res
           .status(401)
-          .json({ success: false, msg: "الايميل ليس مسجل !!" });
+          .json({ success: false, msg: "Email is not registered" });
       }
       const matched = await bcrypt.compare(password, checkEmail.local.password);
       if (!matched) {
         return res
           .status(402)
-          .json({ success: false, msg: "الرقم السري خطا !!" });
+          .json({ success: false, msg: "Password is incorrect!!" });
       }
       const token = jwt.sign(
         {
@@ -166,7 +166,7 @@ export default {
         { expiresIn: "360d" }
       );
       res.status(200).json({
-        msg: "تم الدخول بنجاح ...",
+        msg: "Successfully loggedin",
         success: true,
         username: checkEmail.local.username,
         token,
@@ -174,7 +174,7 @@ export default {
         userId: checkEmail._id
       });
     } catch (err) {
-      res.status(500).json({ success: false, msg: "هناك خطأ ما....." });
+      res.status(500).json({ success: false, msg: "Error Occured" });
     }
   },
 
