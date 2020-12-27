@@ -170,7 +170,8 @@ export default {
         success: true,
         username: checkEmail.local.username,
         token,
-        image: checkEmail.image
+        image: checkEmail.image,
+        userId: checkEmail._id
       });
     } catch (err) {
       res.status(500).json({ success: false, msg: "هناك خطأ ما....." });
