@@ -336,7 +336,9 @@ export default {
         if (comment.likedBy.includes(authUser._id)) {
           comment.likes--;
           const arrayIndex = comment.likedBy.indexOf(authUser._id);
-          comment.likedBy.splice(arrayIndex, 1);
+          if(arrayIndex > -1) {
+            comment.likedBy.splice(arrayIndex, 1);
+          }
           await fetchedNews.save();
           res
             .status(200)
