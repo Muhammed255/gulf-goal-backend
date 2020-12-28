@@ -225,11 +225,6 @@ export default {
           select: "local.username image",
         })
         .populate({
-          path: "comments.likedBy",
-          model: "User",
-          select: "local.username image",
-        })
-        .populate({
           path: "comments.replies.replier",
           model: "User",
           select: "local.username image",
