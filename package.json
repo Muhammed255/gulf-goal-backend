@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
@@ -35,5 +35,9 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "nodemon": "^2.0.6"
+  },
+  "engines": {
+     "node": "12.14.0",
+     "npm": "6.13.4"
   }
 }
