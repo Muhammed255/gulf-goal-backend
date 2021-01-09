@@ -4,11 +4,6 @@ import News from "../models/news.model.js";
 import Trends from "../models/trends.model.js";
 import User from "../models/user.model.js";
 
-//import { dirname } from "path";
-//import { fileURLToPath } from "url";
-//const __filename = fileURLToPath(import.meta.url);
-//const __dirname = dirname(__filename);
-
 export default {
   async addNews(req, res, next) {
     try {
@@ -91,10 +86,9 @@ export default {
           select: "tag",
         })
         .sort({ created_at: -1 })
-        .populate("userId")
         .populate("related_news")
         .populate("comments.commentator")
-        .populate("comments.replies.replier");
+        .populate("comments.replies.replier").select("-userId");
 
       // find related based on tag_name
 
@@ -232,7 +226,7 @@ export default {
         return res.status(401).json({ success: false, msg: "Unauthorized.." });
       }
 
-      if (!authUser || authUser.role !== "admin") {
+      if (!authUser && authUser.role !== "admin") {
         return res
           .status(401)
           .json({ success: false, msg: "Not Allowed to update News" });
