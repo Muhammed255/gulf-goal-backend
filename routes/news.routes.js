@@ -1,4 +1,3 @@
-import path from "path";
 import express from "express";
 import multer from "multer";
 import passport from "passport";
@@ -11,7 +10,6 @@ const MIME_TYPE_MAP = {
   "image/png": "png",
 };
 
-process.env.PWD = process.cwd();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -20,7 +18,7 @@ const storage = multer.diskStorage({
     if (isValid) {
       error = null;
     }
-    cb(error, path.join(process.env.PWD + "/images"));
+    cb(error, "images");
   },
   filename: (req, file, cb) => {
     const name = file.originalname.toLocaleLowerCase().split(" ").join("-");

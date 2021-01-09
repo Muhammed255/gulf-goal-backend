@@ -249,6 +249,7 @@ export default {
       );
       res.status(200).json({ success: true, msg: "News Updated !!" });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ success: false, msg: "Error Occured !!", err });
     }
   },
