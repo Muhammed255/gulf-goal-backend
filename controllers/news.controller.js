@@ -13,7 +13,7 @@ export default {
   async addNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      const url = "https://gulf-goal.herokuapp.com";
+      const url = req.protocol + "://" + req.get("host");
       const authUser = await User.findById(req.userData.userId);
       if (authUser.role === "user") {
         return res.status(401).json({
@@ -221,7 +221,7 @@ export default {
   async updateNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      const url = "https://gulf-foal.herokuapp.com";
+      const url = req.protocol + "://" + req.get("host");
       const newsToUpdate = await News.findById(req.params.newsId);
       const authUser = await User.findOne({ _id: req.userData.userId });
 
@@ -584,11 +584,10 @@ export default {
       const arrayLength = checkTrends.length;
       console.log("length: ", arrayLength);
       if (arrayLength <= 4) {
-        trends.trends_news = news._id;
         news.is_trend = true;
       } else {
+        await News.findOneAndUpdate({_id: checkTrends[0].newsId}, {is_trend: false}, {new: true});
         await Trends.findOneAndDelete({ _id: checkTrends[0]._id });
-        trends.trends_news = news._id;
         news.is_trend = true;
       }
 
@@ -603,8 +602,7 @@ export default {
 
   async getAdminTrendingNews(req, res, next) {
     try {
-      const trends = await User.find()
-        .populate("trends_news")
+      const trends = await Trends.find()
         .populate("tag")
         .populate("userId");
       res.status(200).json(trends);
@@ -633,6 +631,7 @@ export default {
   async removeTrend(req, res, next) {
     try {
       const trend = await Trends.findById(req.params.trendId);
+      console.log(JSON.stringify(trend));
       if (!trend) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
@@ -661,6 +660,7 @@ export default {
 
       res.status(200).json({ success: true, msg: "Trend Deleted!!" });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ err });
     }
   },

@@ -244,7 +244,6 @@ export default {
   // },
 
   getAllUsers(req, res, next) {
-
       const pageSize = +req.query.pageSize;
       const currentPage = +req.query.page;
       const userQuery = User.find({
@@ -381,9 +380,10 @@ export default {
       if (!authUser) {
         return res.status(400).json({ success: false, msg: "Unauthorized!" });
       }
-      let imagePath = fs.readFileSync(path.join(__dirname, "../", req.file.path));
+      let imagePath = req.body.image;
       if (req.file) {
-        imagePath = fs.readFileSync(path.join(__dirname, "../", req.file.path));
+        const url = req.protocol + "://" + req.get("host");
+        imagePath = url + "/images/users" + req.file.filename;
       }
       await User.findOneAndUpdate(
         { _id: req.userData.userId },

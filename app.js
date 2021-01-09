@@ -39,7 +39,7 @@ mongoose
   });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(
 //   session({
 //     secret: appConfig.securityCode,
@@ -87,7 +87,9 @@ app.use(cors());
 
 process.env.PWD = process.cwd();
 
-app.use("/images", express.static(process.env.PWD + "/images"));
+app.use("/images", express.static(path.join("/images")));
+
+app.use("/images/users", express.static(path.join("/images/users")));
 
 app.use("/api/users", userRoutes);
 
