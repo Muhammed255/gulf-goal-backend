@@ -243,30 +243,27 @@ export default {
   //   res.status(200).json({ success: true, user: req.userData, token });
   // },
 
-  async getAllUsers(req, res, next) {
-    try {
+  getAllUsers(req, res, next) {
+
       const pageSize = +req.query.pageSize;
       const currentPage = +req.query.page;
       const userQuery = User.find({
         _id: { $ne: req.userData.userId },
-      }).populate("fav_news");
+      }).populate("fav_news").sort({ created_at: -1 });
       let fetchedUsers;
       if (pageSize && currentPage) {
-        fetchedUsers = await userQuery
+        userQuery
           .skip(pageSize * (currentPage - 1))
           .limit(pageSize);
       }
-
-      const count = await userQuery.countDocuments();
-      if (fetchedUsers.length < 1) {
-        return res.status(401).json({ success: false, msg: "No Users found" });
-      }
-      res
-        .status(200)
-        .json({ success: true, users: fetchedUsers, count: count });
-    } catch (err) {
-      res.status(500).json({ err });
-    }
+      userQuery.then(users => {
+        fetchedUsers = users;
+        return userQuery.countDocuments();
+      }).then(count => {
+        res.status(200).json({ success: true, users: fetchedUsers, count: count });
+      }).catch(err => {
+        res.status(500).json({ err });
+      });
   },
 
   async deleteUser(req, res, next) {
