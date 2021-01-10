@@ -1,4 +1,3 @@
-import path from "path";
 //import { dirname } from "path";
 //import { fileURLToPath } from "url";
 //const __filename = fileURLToPath(import.meta.url);
@@ -68,7 +67,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // });
 
 //Setup CORS
-// app.use(cors());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
 
@@ -84,10 +82,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
-app.use("/images", express.static(path.join("/images")));
-
-app.use("/images/users", express.static(path.join("/images/users")));
 
 app.use("/api/users", userRoutes);
 

@@ -18,4 +18,7 @@ export const appConfig = {
     appSecret: "aad6f493e269d002df8669226b174a9e",
     redirectUrl: "http://localhost:3000/api/users/facebook/callback",
   },
+  CLOUDINARY_CLOUD_API_NAME: "www-gulfgoal-com",
+  CLOUDINARY_CLOUD_API_KEY: "331449656393812",
+  CLOUDINARY_CLOUD_API_SECRET: "6z-C24Otqm-m8SqAeBA345gME38"
 };

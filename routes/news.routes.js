@@ -10,7 +10,6 @@ const MIME_TYPE_MAP = {
   "image/png": "png",
 };
 
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
@@ -44,7 +43,9 @@ export const newsRoutes = express.Router();
 newsRoutes.post(
   "/create-news",
   checkAuth,
-  multer({ storage: storage, fileFilter: fileFilter }).single("image"),
+  multer({ storage: multer.diskStorage({}), fileFilter: fileFilter }).single(
+    "image"
+  ),
   newsController.addNews
 );
 
@@ -97,7 +98,7 @@ newsRoutes
   .get(newsController.findOneNews)
   .put(
     checkAuth,
-    multer({ storage, fileFilter }).single("image"),
+    multer({ storage: multer.diskStorage({}), fileFilter }).single("image"),
     newsController.updateNews
   )
   .delete(checkAuth, newsController.deleteNews);

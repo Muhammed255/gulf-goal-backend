@@ -96,7 +96,7 @@ export default {
       if (result.length < 1) {
         res
           .status(200)
-          .json({ success: false, msg: "لا يوجد مبارايات الان !!!" });
+          .json({ success: false, msg: "No Matches Now" });
       }
 
       res.status(200).json({

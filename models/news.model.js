@@ -54,6 +54,9 @@ const newsSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  cloudinary_id: {
+    type: String
+  },
   comments: [
     {
       comment: { type: String, validate: commentValidator },

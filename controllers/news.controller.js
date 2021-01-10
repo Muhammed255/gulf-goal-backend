@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import cloudinary from "../middleware/cloudinary.js";
 import News from "../models/news.model.js";
 import Trends from "../models/trends.model.js";
 import User from "../models/user.model.js";
@@ -8,7 +9,6 @@ export default {
   async addNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      const url = req.protocol + "://" + req.get("host");
       const authUser = await User.findById(req.userData.userId);
       if (authUser.role === "user") {
         return res.status(401).json({
@@ -17,10 +17,14 @@ export default {
           auth: authUser.role,
         });
       }
+      const imageResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "news",
+      });
       const news = new News({
         title,
         content,
-        image: url + "/images/" + req.file.filename,
+        image: imageResult.secure_url,
+        cloudinary_id: imageResult.public_id,
         userId: req.userData.userId,
         teamId,
         tag,
@@ -88,7 +92,8 @@ export default {
         .sort({ created_at: -1 })
         .populate("related_news")
         .populate("comments.commentator")
-        .populate("comments.replies.replier").select("-userId");
+        .populate("comments.replies.replier")
+        .select("-userId");
 
       // find related based on tag_name
 
@@ -215,7 +220,6 @@ export default {
   async updateNews(req, res, next) {
     try {
       const { title, content, teamId, tag } = req.body;
-      const url = req.protocol + "://" + req.get("host");
       const newsToUpdate = await News.findById(req.params.newsId);
       const authUser = await User.findOne({ _id: req.userData.userId });
 
@@ -233,7 +237,16 @@ export default {
       }
       let imagePath = req.body.image;
       if (req.file) {
-        imagePath = url + "/images/" + req.file.filename;
+        await cloudinary.uploader.destroy(
+          `news/${newsToUpdate.cloudinary_id}`,
+          { invalidate: true, resource_type: "image" }
+        );
+        const imageResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: "news",
+        });
+
+        imagePath = imageResult.secure_url;
+        newsToUpdate.cloudinary_id = imageResult.public_id;
       }
 
       await News.findByIdAndUpdate(
@@ -263,6 +276,10 @@ export default {
       if (newsToDelete.userId.toString() !== req.userData.userId.toString()) {
         return res.status(401).send({ success: false, msg: "Unauthorized.." });
       }
+      await cloudinary.uploader.destroy(`news/${newsToDelete.cloudinary_id}`, {
+        invalidate: true,
+        resource_type: "image",
+      });
 
       await News.findByIdAndDelete(req.params.newsId);
       res.status(200).json({ success: true, msg: "News Deleted !!" });
@@ -293,7 +310,6 @@ export default {
           .json({ success: false, msg: "You Can not like your news" });
       }
 
-
       if (newsToLike.likedBy.includes(authUser._id)) {
         newsToLike.likes--;
         const arrayIndex = newsToLike.likedBy.indexOf(authUser._id);
@@ -317,7 +333,10 @@ export default {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
 
-      const fetchedNews = await News.findOne({ _id: req.body.newsId, "comments._id": req.body.commentId });
+      const fetchedNews = await News.findOne({
+        _id: req.body.newsId,
+        "comments._id": req.body.commentId,
+      });
       if (!fetchedNews) {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
@@ -332,13 +351,11 @@ export default {
         if (comment.likedBy.includes(authUser._id)) {
           comment.likes--;
           const arrayIndex = comment.likedBy.indexOf(authUser._id);
-          if(arrayIndex > -1) {
+          if (arrayIndex > -1) {
             comment.likedBy.splice(arrayIndex, 1);
           }
           await fetchedNews.save();
-          res
-            .status(200)
-            .json({ success: true, msg: "Like Removed!!" });
+          res.status(200).json({ success: true, msg: "Like Removed!!" });
         } else {
           comment.likes++;
           comment.likedBy.push(authUser._id);
@@ -470,8 +487,6 @@ export default {
         res.status(401).json({ success: false, msg: "Can not find news" });
       }
 
-      
-
       const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
         res.status(401).json({ success: false, msg: "Unautherized..." });
@@ -483,13 +498,13 @@ export default {
           replier: req.userData.userId,
         },
       };
-      
+
       await News.updateOne(
         { _id: newsId, "comments._id": req.body.commentId },
         { $push: replyData },
         { new: true }
       );
-      
+
       res.status(200).json({ success: true, msg: "Reply added" });
     } catch (err) {
       console.log(err);
@@ -581,7 +596,11 @@ export default {
       if (arrayLength <= 4) {
         news.is_trend = true;
       } else {
-        await News.findOneAndUpdate({_id: checkTrends[0].newsId}, {is_trend: false}, {new: true});
+        await News.findOneAndUpdate(
+          { _id: checkTrends[0].newsId },
+          { is_trend: false },
+          { new: true }
+        );
         await Trends.findOneAndDelete({ _id: checkTrends[0]._id });
         news.is_trend = true;
       }
@@ -597,9 +616,7 @@ export default {
 
   async getAdminTrendingNews(req, res, next) {
     try {
-      const trends = await Trends.find()
-        .populate("tag")
-        .populate("userId");
+      const trends = await Trends.find().populate("tag").populate("userId");
       res.status(200).json(trends);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
@@ -608,7 +625,7 @@ export default {
 
   async getTrendingNews(req, res, next) {
     try {
-      const trends = await News.find({is_trend: true})
+      const trends = await News.find({ is_trend: true })
         .populate("tag")
         .populate("userId");
       trends.forEach((ele) => {

@@ -62,6 +62,9 @@ var userSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  cloudinary_id: {
+    type: String,
+  },
   created_at: {
     type: String,
     default: () => moment().format("YYYY-MM-DD"),

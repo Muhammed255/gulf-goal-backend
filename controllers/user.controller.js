@@ -6,12 +6,12 @@ import sgMail from "@sendgrid/mail";
 import { appConfig } from "../middleware/app-config.js";
 import ResetToken from "../models/reset-token.model.js";
 import User from "../models/user.model.js";
+import cloudinary from "../middleware/cloudinary.js";
 
 //import { dirname } from "path";
 //import { fileURLToPath } from "url";
 //const __filename = fileURLToPath(import.meta.url);
 //const __dirname = dirname(__filename);
-
 
 export default {
   async signup(req, res, next) {
@@ -52,7 +52,7 @@ export default {
         msg: "Successfully Registered",
         token,
         username: user.local.username,
-        userId: user._id
+        userId: user._id,
       });
     } catch (err) {
       console.log(err);
@@ -171,7 +171,7 @@ export default {
         username: checkEmail.local.username,
         token,
         image: checkEmail.image,
-        userId: checkEmail._id
+        userId: checkEmail._id,
       });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Error Occured" });
@@ -244,23 +244,28 @@ export default {
   // },
 
   getAllUsers(req, res, next) {
-      const pageSize = +req.query.pageSize;
-      const currentPage = +req.query.page;
-      const userQuery = User.find({
-        _id: { $ne: req.userData.userId },
-      }).populate("fav_news").sort({ created_at: -1 });
-      let fetchedUsers;
-      if (pageSize && currentPage) {
-        userQuery
-          .skip(pageSize * (currentPage - 1))
-          .limit(pageSize);
-      }
-      userQuery.then(users => {
+    const pageSize = +req.query.pageSize;
+    const currentPage = +req.query.page;
+    const userQuery = User.find({
+      _id: { $ne: req.userData.userId },
+    })
+      .populate("fav_news")
+      .sort({ created_at: -1 });
+    let fetchedUsers;
+    if (pageSize && currentPage) {
+      userQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+    }
+    userQuery
+      .then((users) => {
         fetchedUsers = users;
         return userQuery.countDocuments();
-      }).then(count => {
-        res.status(200).json({ success: true, users: fetchedUsers, count: count });
-      }).catch(err => {
+      })
+      .then((count) => {
+        res
+          .status(200)
+          .json({ success: true, users: fetchedUsers, count: count });
+      })
+      .catch((err) => {
         res.status(500).json({ err });
       });
   },
@@ -382,8 +387,15 @@ export default {
       }
       let imagePath = req.body.image;
       if (req.file) {
-        const url = req.protocol + "://" + req.get("host");
-        imagePath = url + "/images/users" + req.file.filename;
+        await cloudinary.uploader.destroy(`users/${authUser.cloudinary_id}`, {
+          invalidate: true,
+          resource_type: "image",
+        });
+        const imageResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: "users",
+        });
+        imagePath = imageResult.secure_url;
+        authUser.cloudinary_id = imageResult.public_id;
       }
       await User.findOneAndUpdate(
         { _id: req.userData.userId },
