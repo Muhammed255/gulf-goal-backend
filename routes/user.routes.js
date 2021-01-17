@@ -93,6 +93,8 @@ userRoutes.post("/test", checkAuth, userController.test);
 
 userRoutes.get("/all-users", checkAuth, userController.getAllUsers);
 
+userRoutes.get("/count-users", checkAuth, userController.countUsers);
+
 userRoutes.get("/:userId", checkAuth, userController.findOneUser);
 
 userRoutes.delete("/:userId", checkAuth, userController.deleteUser);

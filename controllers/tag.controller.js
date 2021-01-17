@@ -53,6 +53,15 @@ export default {
     }
   },
 
+  async countTags(req, res, next) {
+    try {
+      const count = await Tag.estimatedDocumentCount();
+      res.status(200).json({ count: count });
+    } catch (err) {
+      res.status(500).json({ err });
+    }
+  },
+
   async updateTag(req, res, next) {
     try {
       const { tag } = req.body;

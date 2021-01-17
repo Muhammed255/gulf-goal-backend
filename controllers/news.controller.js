@@ -8,7 +8,7 @@ import User from "../models/user.model.js";
 export default {
   async addNews(req, res, next) {
     try {
-      const { title, content, teamId, tag } = req.body;
+      const { title, content, tag } = req.body;
       const authUser = await User.findById(req.userData.userId);
       if (authUser.role === "user") {
         return res.status(401).json({
@@ -26,7 +26,6 @@ export default {
         image: imageResult.secure_url,
         cloudinary_id: imageResult.public_id,
         userId: req.userData.userId,
-        teamId,
         tag,
       });
       await news.save();
@@ -125,10 +124,9 @@ export default {
     }
   },
 
-  admin_allNews(req, res, next) {
-    const pageSize = +req.query.pageSize;
-    const currentPage = +req.query.page;
-    const allNews = News.find()
+  async admin_allNews(req, res, next) {
+    try {
+      const allNews = await News.find()
       .populate({
         path: "tag",
         select: "tag",
@@ -139,21 +137,12 @@ export default {
       .populate("comments.commentator")
       .populate("comments.replies.replier");
 
-    let fetchedNews;
-    if (pageSize && currentPage) {
-      allNews.skip(pageSize * (currentPage - 1)).limit(pageSize);
+
+      res.status(200).json({ news: allNews });
+
+    } catch (err) {
+      res.status(500).json({ err });
     }
-    allNews
-      .then((news) => {
-        fetchedNews = news;
-        return News.countDocuments();
-      })
-      .then((count) => {
-        res.json({ news: fetchedNews, maxNews: count });
-      })
-      .catch((err) => {
-        res.status(500).json({ err });
-      });
   },
 
   async recentFiveNews(req, res, next) {
@@ -192,10 +181,19 @@ export default {
 
   async getRandomNews(req, res, next) {
     try {
-      const count = await News.count();
+      const count = await News.countDocuments();
       const random = Math.floor(Math.random() * count);
       const newsQuery = await News.find().skip(random).limit(5).exec();
       res.status(200).json({ randomNews: newsQuery });
+    } catch (err) {
+      res.status(500).json({ err });
+    }
+  },
+
+  async countNews(req, res, next) {
+    try {
+      const count = await News.estimatedDocumentCount();
+      res.status(200).json({ count: count });
     } catch (err) {
       res.status(500).json({ err });
     }
@@ -219,7 +217,7 @@ export default {
 
   async updateNews(req, res, next) {
     try {
-      const { title, content, teamId, tag } = req.body;
+      const { title, content, tag } = req.body;
       const newsToUpdate = await News.findById(req.params.newsId);
       const authUser = await User.findOne({ _id: req.userData.userId });
 
@@ -251,7 +249,7 @@ export default {
 
       await News.findByIdAndUpdate(
         req.params.newsId,
-        { title, content, image: imagePath, teamId, tag },
+        { title, content, image: imagePath, tag },
         { new: true }
       );
       res.status(200).json({ success: true, msg: "News Updated !!" });
@@ -576,6 +574,10 @@ export default {
       trends.userId = fetchedUser._id;
       trends.tag = news.tag;
       trends.newsId = news._id;
+      trends.comments = news.comments;
+      trends.likedBy = news.likedBy;
+      trends.likes = news.likes;
+      trends.visits = news.visits;
 
       const checkTrends = await Trends.find();
 

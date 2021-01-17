@@ -67,7 +67,7 @@ var userSchema = new mongoose.Schema({
   },
   created_at: {
     type: String,
-    default: () => moment().format("YYYY-MM-DD"),
+    default: () => moment().format("lll"),
   },
 });
 

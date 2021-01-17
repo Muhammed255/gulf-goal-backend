@@ -81,6 +81,8 @@ newsRoutes.get("/filtered-news/:newsId", newsController.filterNewsByTagName);
 
 newsRoutes.get("/get-comments/:newsId", newsController.newsComments);
 
+newsRoutes.get("/count-news", newsController.countNews);
+
 newsRoutes.put(
   "/add-to-favorites/:newsId",
   checkAuth,

@@ -8,11 +8,6 @@ import ResetToken from "../models/reset-token.model.js";
 import User from "../models/user.model.js";
 import cloudinary from "../middleware/cloudinary.js";
 
-//import { dirname } from "path";
-//import { fileURLToPath } from "url";
-//const __filename = fileURLToPath(import.meta.url);
-//const __dirname = dirname(__filename);
-
 export default {
   async signup(req, res, next) {
     try {
@@ -243,31 +238,28 @@ export default {
   //   res.status(200).json({ success: true, user: req.userData, token });
   // },
 
-  getAllUsers(req, res, next) {
-    const pageSize = +req.query.pageSize;
-    const currentPage = +req.query.page;
-    const userQuery = User.find({
-      _id: { $ne: req.userData.userId },
-    })
-      .populate("fav_news")
-      .sort({ created_at: -1 });
-    let fetchedUsers;
-    if (pageSize && currentPage) {
-      userQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  async getAllUsers(req, res, next) {
+    try {
+      const fetchedUsers = await User.find({
+        _id: { $ne: req.userData.userId },
+      })
+        .populate("fav_news")
+        .sort({ created_at: -1 });
+      res
+        .status(200)
+        .json({ success: true, users: fetchedUsers, count: count });
+    } catch (err) {
+      res.status(500).json({ err });
     }
-    userQuery
-      .then((users) => {
-        fetchedUsers = users;
-        return userQuery.countDocuments();
-      })
-      .then((count) => {
-        res
-          .status(200)
-          .json({ success: true, users: fetchedUsers, count: count });
-      })
-      .catch((err) => {
-        res.status(500).json({ err });
-      });
+  },
+
+  async countUsers(req, res, next) {
+    try {
+      const count = await User.estimatedDocumentCount();
+      res.status(200).json({success: true, count: count});
+    } catch (err) {
+      res.status(500).json({ err });
+    }
   },
 
   async deleteUser(req, res, next) {
@@ -301,13 +293,13 @@ export default {
     try {
       const email = req.body.email;
       if (!email) {
-        res.status(500).json({ success: false, msg: "الايميل مطلوب" });
+        res.status(500).json({ success: false, msg: "Email is required" });
       }
       const user = await User.findOne({ "local.email": email });
       if (!user) {
         res
           .status(409)
-          .json({ success: false, msg: "لا يوجد مستخدم بهذا الايميل" });
+          .json({ success: false, msg: "No user found with this email" });
       }
       const resetPass = new ResetToken({
         userId: user._id,
@@ -320,7 +312,7 @@ export default {
       })
         .remove()
         .exec();
-      res.status(200).json({ msg: "افحص حسابك للكود" });
+      res.status(200).json({ msg: "Check your email" });
       sgMail.setApiKey(appConfig.sendGrid_API_Key);
       var mailOptions = {
         from: "admin@gulf-goal.com",
@@ -343,26 +335,26 @@ export default {
   async validatePassToken(req, res, next) {
     const token = req.body.resetToken;
     if (!token) {
-      return res.status(500).json({ success: false, msg: "الكود مطلوب" });
+      return res.status(500).json({ success: false, msg: "Token required" });
     }
     const tokenCheck = await ResetToken.findOne({ resetToken: token });
     if (!tokenCheck) {
-      return res.status(409).json({ success: false, msg: "الكود غير صالح !!" });
+      return res.status(409).json({ success: false, msg: "Invalid token!" });
     }
-    res.status(200).json({ success: true, msg: "تم التأكيد" });
+    res.status(200).json({ success: true, msg: "Confirmed" });
   },
 
   async newPassword(req, res, next) {
     try {
       const reset = await ResetToken.findOne({ _id: req.params.resetToken });
       if (!reset) {
-        res.status(500).json({ success: false, msg: "انتهت مدة الكود" });
+        res.status(500).json({ success: false, msg: "Token expired!!" });
       }
       const user = await User.findOne({ _id: reset.userId });
       if (!user) {
         res
           .status(401)
-          .json({ success: false, msg: "لا يوجد مستخدم بهذا الايميل" });
+          .json({ success: false, msg: "No user found with this email" });
       }
 
       const salt = await bcrypt.genSalt();
