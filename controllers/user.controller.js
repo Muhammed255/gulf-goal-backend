@@ -247,7 +247,7 @@ export default {
         .sort({ created_at: -1 });
       res
         .status(200)
-        .json({ success: true, users: fetchedUsers, count: count });
+        .json({ success: true, users: fetchedUsers });
     } catch (err) {
       res.status(500).json({ err });
     }
