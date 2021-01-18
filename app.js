@@ -70,7 +70,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Setup CORS
 
 app.use(cors());
-
+/*
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -86,7 +86,7 @@ app.use((req, res, next) => {
     "GET, POST, PATCH, PUT, DELETE, OPTIONS"
   );
   next();
-});
+});*/
 
 app.use("/api/users", userRoutes);
 
