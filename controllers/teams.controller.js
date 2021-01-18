@@ -158,20 +158,20 @@ export default {
           .json({ success: false, msg: "No comment provided" });
       }
 
-      const newMatch = new Match();
-
       const authUser = await User.findOne({ _id: req.userData.userId });
       if (!authUser) {
         res.status(401).json({ success: false, msg: "Unautherized..." });
       }
+
+      const newMatch = new Match();
 
       newMatch.comments.push({
         comment: req.body.comment,
         commentator: req.userData.userId,
       });
       newMatch.match_id = req.body.match_id;
-      await newMatch.save();
 
+      await newMatch.save();
       res.status(200).json({ success: true, msg: "Comment added on Match" });
     } catch (err) {
       res.status(500).json({ err });

@@ -567,7 +567,7 @@ export default {
         return res.status(401).json({ success: false, msg: "Unautherized" });
       }
 
-      const trends = new Trends();
+     /* const trends = new Trends();
       trends.title = news.title;
       trends.content = news.content;
       trends.image = news.image;
@@ -578,13 +578,13 @@ export default {
       trends.likedBy = news.likedBy;
       trends.likes = news.likes;
       trends.visits = news.visits;
-
-      const checkTrends = await Trends.find();
+*/
+      const checkTrends = await News.find({is_trend: true});
 
       // let newsIndex;
       if (checkTrends.length >= 1) {
         const newsIndex = checkTrends.findIndex((t) => {
-          return t.newsId.toString() === news._id.toString();
+          return t._id.toString() === news._id.toString();
         });
         if (newsIndex !== -1) {
           return res
@@ -599,15 +599,13 @@ export default {
         news.is_trend = true;
       } else {
         await News.findOneAndUpdate(
-          { _id: checkTrends[0].newsId },
+          { _id: checkTrends[0]._id },
           { is_trend: false },
           { new: true }
         );
-        await Trends.findOneAndDelete({ _id: checkTrends[0]._id });
         news.is_trend = true;
       }
 
-      await trends.save();
       await news.save();
       res.status(200).json({ success: true, msg: "Becomes a trend" });
     } catch (err) {
@@ -618,7 +616,7 @@ export default {
 
   async getAdminTrendingNews(req, res, next) {
     try {
-      const trends = await Trends.find().populate("tag").populate("userId");
+      const trends = await News.find({is_trend: true}).populate("tag").populate("userId");
       res.status(200).json(trends);
     } catch (err) {
       res.status(500).json({ success: false, msg: err });
