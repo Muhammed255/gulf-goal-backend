@@ -69,7 +69,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //Setup CORS
 
-app.use(cors);
+app.use(cors());
 
 app.use("/api/users", userRoutes);
 
