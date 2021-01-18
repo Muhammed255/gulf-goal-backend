@@ -86,7 +86,8 @@ app.use((req, res, next) => {
     "GET, POST, PATCH, PUT, DELETE, OPTIONS"
   );
   next();
-});*/
+});
+*/
 
 app.use("/api/users", userRoutes);
 
