@@ -162,18 +162,24 @@ export default {
       if (!authUser) {
         res.status(401).json({ success: false, msg: "Unautherized..." });
       }
+	const foundMatch = await Match.findOne({match_id: req.body.match_id});
+	if(!foundMatch) {
+	   const newMatch = new Match();
+	   newMatch.match_id = req.body.match_id;
+	   await newMatch.save();
+	}
 
-      const newMatch = new Match();
+      await Match.findOneAndUpdate({match_id: req.body.match_id}, {$push: {comments: {comment: req.body.comment, commentator: req.userData.userId}}})
 
-      newMatch.comments.push({
+      /*newMatch.comments.push({
         comment: req.body.comment,
         commentator: req.userData.userId,
-      });
-      newMatch.match_id = req.body.match_id;
+      });*/
+      
 
-      await newMatch.save();
       res.status(200).json({ success: true, msg: "Comment added on Match" });
     } catch (err) {
+      console.log(err)
       res.status(500).json({ err });
     }
   },
@@ -233,6 +239,7 @@ export default {
       if (!foundMatch) {
         return res.status(400).json({ success: false, msg: "No Match Found" });
       }
+	console.log(JSON.stringify(foundMatch));
       res
         .status(200)
         .json({
