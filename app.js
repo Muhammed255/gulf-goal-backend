@@ -70,9 +70,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Setup CORS
 
 app.use(cors());
-/*
+
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
@@ -87,7 +87,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-*/
 
 app.use("/api/users", userRoutes);
 
