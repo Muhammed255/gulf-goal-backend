@@ -23,8 +23,6 @@ import { tagRoutes } from "./routes/tag.routes.js";
 const app = express();
 const port = appConfig.port;
 
-
-
 mongoose.Promise = global.Promise;
 
 mongoose
@@ -38,8 +36,9 @@ mongoose
     console.log("Connected To Mongo DB");
   });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: "200mb" }));
+app.use(bodyParser.urlencoded({ limit: "200mb", extended: true }));
+app.use(bodyParser.text({ limit: "200mb" }));
 // app.use(
 //   session({
 //     secret: appConfig.securityCode,
@@ -79,8 +78,7 @@ app.use((req, res, next) => {
   );
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Max-Age", "1800");
-  res.setHeader(
-    "Access-Control-Expose-Headers", "*, Authorization");
+  res.setHeader("Access-Control-Expose-Headers", "*, Authorization");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PATCH, PUT, DELETE, OPTIONS"
