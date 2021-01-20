@@ -383,8 +383,8 @@ export default {
           invalidate: true,
           resource_type: "image",
         });
-//"data:image/jpeg;base64," + 
-        const imageResult = await cloudinary.uploader.upload(req.file.path, {
+// + 
+        const imageResult = await cloudinary.uploader.upload("data:image/jpeg;base64," + req.file.path, {
           folder: "users",
         });
         imagePath = imageResult.secure_url;
@@ -395,7 +395,7 @@ export default {
         { image: imagePath },
         { new: true, upsert: true }
       );
-      res.status(200).json({ success: true, msg: "Image Updated....", image: authUser.image });
+      res.status(200).json({ success: true, msg: "Image Updated....", image: Buffer.from(authUser.image, 'base64') });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Error occured" });
     }
