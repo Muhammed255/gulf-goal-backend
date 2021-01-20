@@ -234,22 +234,25 @@ export default {
           .json({ success: false, msg: "Not Allowed to update News" });
       }
       let imagePath = req.body.image;
+      let imageId= newsToUpdate.cloudinary_id;
       if (req.file) {
         await cloudinary.uploader.destroy(
-          `news/${newsToUpdate.cloudinary_id}`,
+          newsToUpdate.cloudinary_id,
           { invalidate: true, resource_type: "image" }
         );
-        const imageResult = await cloudinary.uploader.upload(req.file.path, {
-          folder: "news",
-        });
+      }
 
+      const imageResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "news",
+      });
+      if(req.file) {
         imagePath = imageResult.secure_url;
-        newsToUpdate.cloudinary_id = imageResult.public_id;
+        imageId = imageResult.public_id;
       }
 
       await News.findByIdAndUpdate(
         req.params.newsId,
-        { title, content, image: imagePath, tag },
+        { title, content, image: imagePath, cloudinary_id: imageId, tag },
         { new: true }
       );
       res.status(200).json({ success: true, msg: "News Updated !!" });
@@ -274,7 +277,7 @@ export default {
       if (newsToDelete.userId.toString() !== req.userData.userId.toString()) {
         return res.status(401).send({ success: false, msg: "Unauthorized.." });
       }
-      await cloudinary.uploader.destroy(`news/${newsToDelete.cloudinary_id}`, {
+      await cloudinary.uploader.destroy(newsToDelete.cloudinary_id, {
         invalidate: true,
         resource_type: "image",
       });

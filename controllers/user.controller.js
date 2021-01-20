@@ -378,10 +378,13 @@ export default {
         return res.status(400).json({ success: false, msg: "Unauthorized!" });
       }
       let imagePath = req.body.image;
-      await cloudinary.uploader.destroy(`users/${authUser.cloudinary_id}`, {
-        invalidate: true,
-        resource_type: "image",
-      });
+      let imageId = authUser.cloudinary_id;
+      if(req.file) {
+        await cloudinary.uploader.destroy(authUser.cloudinary_id, {
+          invalidate: true,
+          resource_type: "image",
+        });
+      }
       // const imageBuffer = Buffer.from(req.file.path, 'base64');
       // console.log("buffer: " + imageBuffer.toString("utf8"));
       const imageResult = await cloudinary.uploader.upload(req.file.path, {
@@ -389,10 +392,11 @@ export default {
       });
       if(req.file) {
         imagePath = imageResult.secure_url;
+        imageId = imageResult.public_id;
       }
       await User.findOneAndUpdate(
         { _id: req.userData.userId },
-        { image: imagePath, cloudinary_id: imageResult.public_id },
+        { image: imagePath, cloudinary_id: imageId },
         { new: true, upsert: true }
       );
       res.status(200).json({ success: true, msg: "Image Updated....", image: imageResult.secure_url });
