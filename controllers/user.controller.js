@@ -394,7 +394,7 @@ export default {
         { image: imagePath },
         { new: true, upsert: true }
       );
-      res.status(200).json({ success: true, msg: "Image Updated...." });
+      res.status(200).json({ success: true, msg: "Image Updated....", image: authUser.image });
     } catch (err) {
       res.status(500).json({ success: false, msg: "Error occured" });
     }
