@@ -383,7 +383,7 @@ export default {
           invalidate: true,
           resource_type: "image",
         });
-        const imageResult = await cloudinary.uploader.upload(req.file.path, {
+        const imageResult = await cloudinary.uploader.upload("data:image/jpeg;base64," + req.file.path, {
           folder: "users",
         });
         imagePath = imageResult.secure_url;
