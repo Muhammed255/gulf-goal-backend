@@ -382,8 +382,9 @@ export default {
         invalidate: true,
         resource_type: "image",
       });
-      const imageBuffer = Buffer.from(req.file.path, 'base64');
-      const imageResult = await cloudinary.uploader.upload(imageBuffer.toString("utf8"), {
+      // const imageBuffer = Buffer.from(req.file.path, 'base64');
+      // console.log("buffer: " + imageBuffer.toString("utf8"));
+      const imageResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "users",
       });
       if(req.file) {
@@ -394,8 +395,9 @@ export default {
         { image: imagePath, cloudinary_id: imageResult.public_id },
         { new: true, upsert: true }
       );
-      res.status(200).json({ success: true, msg: "Image Updated....", image: Buffer.from(authUser.image, 'base64') });
+      res.status(200).json({ success: true, msg: "Image Updated....", image: imageResult.secure_url });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ success: false, msg: "Error occured" });
     }
   },

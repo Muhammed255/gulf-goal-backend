@@ -63,7 +63,7 @@ userRoutes.post("/new-password/:resetToken", userController.newPassword);
 userRoutes.post(
   "/update-image",
   checkAuth,
-  multer({ storage: storage, fileFilter: fileFilter }).single("image"),
+  multer({ storage: multer.diskStorage({}), fileFilter: fileFilter }).single("image"),
   userController.updateProfileImage
 );
 
