@@ -10,10 +10,10 @@ import User from "../models/user.model.js";
 import cloudinary from "../middleware/cloudinary.js";
 
 
-// import { dirname } from "path";
-// import { fileURLToPath } from "url";
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default {
   async signup(req, res, next) {
