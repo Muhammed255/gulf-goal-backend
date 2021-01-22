@@ -80,7 +80,7 @@ userRoutes.get(
   userController.sendJWTToken
 );
 
-app.get("/google-logout", userController.google_auth_logout);
+userRoutes.get("/google-logout", userController.google_auth_logout);
 
 // userRoutes.get(
 //   "/facebook",
