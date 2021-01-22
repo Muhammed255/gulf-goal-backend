@@ -428,7 +428,7 @@ export default {
         res.status(200).json({ success: true, msg: "Image Updated....", image: imageResult.secure_url });
       } catch (err) {
         console.log(err);
-        res.status(500).json({ success: false, msg: "Error occured" });
+        res.status(500).json({ success: false, msg: "Error occured: " + err });
       }
   },
 };
