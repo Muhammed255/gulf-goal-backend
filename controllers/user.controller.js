@@ -411,9 +411,9 @@ export default {
       imageData = imageResult.secure_url;
       imageId = imageResult.public_id;
       //console.log(path.join(__dirname,`../images`));
-      fs.unlinkSync(path.join(__dirname,`../images/image-123.jpg`), (err) => {
-        console.log("File Deleted");
-      });
+      //fs.unlinkSync(path.join(__dirname,`../images/image-123.jpg`), (err) => {
+        //console.log("File Deleted");
+      //});
         // } else {
           
         // }
