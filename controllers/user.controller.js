@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -7,6 +8,12 @@ import { appConfig } from "../middleware/app-config.js";
 import ResetToken from "../models/reset-token.model.js";
 import User from "../models/user.model.js";
 import cloudinary from "../middleware/cloudinary.js";
+import Jimp from "jimp";
+
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default {
   async signup(req, res, next) {
@@ -67,7 +74,7 @@ export default {
       });
       res
         .status(200)
-        .json({ success: true, msg: "تم التسجيل بنجاح...", token });
+        .json({ success: true, msg: "Registered Successfully....", token });
     } catch (err) {
       console.log("Error: " + err);
       return res.status(500).json({ err });
@@ -217,16 +224,21 @@ export default {
     return res.json(req.userData);
   },
 
-  // sendJWTToken(req, res, next) {
-  //   const token = jwt.sign(
-  //     { userId: req.userData.userId },
-  //     appConfig.securityCode,
-  //     {
-  //       expiresIn: "1d",
-  //     }
-  //   );
-  //   res.status(200).json({ success: true, user: req.userData, token });
-  // },
+  sendJWTToken(req, res, next) {
+    const token = jwt.sign(
+      { userId: req.userData.userId },
+      appConfig.securityCode,
+      {
+        expiresIn: "1d",
+      }
+    );
+    res.status(200).json({ success: true, user: req.userData, token });
+  },
+
+  google_auth_logout(req, res, next) {
+    req.logout();
+    res.status(200).json({msg: "Logged out", success: true});
+  },
   // sendFacebookJWTToken(req, res, next) {
   //   const token = jwt.sign(
   //     { userId: req.userData.userId },
@@ -378,31 +390,51 @@ export default {
         return res.status(400).json({ success: false, msg: "Unauthorized!" });
       }
       let imagePath = req.body.image;
-      let imageId = authUser.cloudinary_id;
-      if(req.file) {
+      const imageBuffer = new Buffer.from(imagePath, 'base64');
+      let imageData, imageId;
+      
+      fs.writeFileSync(path.join(__dirname,`../images/image-123.jpg`), imageBuffer, (err) => {
+        console.log('File Created');
+      });
+      if(authUser.cloudinary_id) {
         await cloudinary.uploader.destroy(authUser.cloudinary_id, {
           invalidate: true,
           resource_type: "image",
         });
       }
-      // const imageBuffer = Buffer.from(req.file.path, 'base64');
-      // console.log("buffer: " + imageBuffer.toString("utf8"));
-      const imageResult = await cloudinary.uploader.upload(req.file.path, {
+      
+      // if(imagePath) {
+        // if(authUser.cloudinary_id === 'noimage_ew1uri') {
+      const imageResult = await cloudinary.uploader.upload('images/image-123.jpg', {
         folder: "users",
       });
-      if(req.file) {
-        imagePath = imageResult.secure_url;
-        imageId = imageResult.public_id;
-      }
+      imageData = imageResult.secure_url;
+      imageId = imageResult.public_id;
+      console.log(path.join(__dirname,`../images`));
+      fs.unlinkSync(path.join(__dirname,`../images/image-123.jpg`), (err) => {
+        console.log("File Deleted");
+      });
+        // } else {
+          
+        // }
+      // }
+      
+      
       await User.findOneAndUpdate(
         { _id: req.userData.userId },
-        { image: imagePath, cloudinary_id: imageId },
+        { image: imageData, cloudinary_id: imageId},
         { new: true, upsert: true }
-      );
-      res.status(200).json({ success: true, msg: "Image Updated....", image: imageResult.secure_url });
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ success: false, msg: "Error occured" });
-    }
+        );
+        res.status(200).json({ success: true, msg: "Image Updated....", image: imageResult.secure_url });
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({ success: false, msg: "Error occured" });
+      }
+      // let base64Image = imagePath.split(';base64,').pop();
+      // const imageBuffer = Buffer.from(imagePath.toString(), 'base64');
+      // const resp = await Jimp.read(imageBuffer);
+      // resp.quality(5).write("/images/file.jpg");
+      
+      // console.log("buffer: " + imageBuffer);
   },
 };

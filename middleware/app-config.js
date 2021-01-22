@@ -7,6 +7,7 @@ export const appConfig = {
   port: process.env.PORT || 3000,
   sendGrid_API_Key:
     "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",
+  cookieKey: "cookie_key_set_up_by_you",
   google: {
     clientId:
       "131881189995-6u4f4fhkco7h0jjq1ak6kmnqrfn6q6od.apps.googleusercontent.com",

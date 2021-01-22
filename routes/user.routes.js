@@ -69,16 +69,18 @@ userRoutes.post(
 
 userRoutes.post("/test", checkAuth, userController.test);
 
-// userRoutes.get(
-//   "/google",
-//   passport.authenticate("google", { scope: ["profile", "email"] })
-// );
+userRoutes.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
-// userRoutes.get(
-//   "/google/callback",
-//   passport.authenticate("google", { failureRedirect: "/failure" }),
-//   userController.sendJWTToken
-// );
+userRoutes.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/failure" }),
+  userController.sendJWTToken
+);
+
+app.get("/google-logout", userController.google_auth_logout);
 
 // userRoutes.get(
 //   "/facebook",

@@ -13,12 +13,12 @@ export const PassportGoogle = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          const user = await User.findOne({ "google.id": profile.id });
+          const user = await User.findOne({ "google.userId": profile.id });
           if (user) {
             return done(null, user);
           }
           const newUser = new User();
-          newUser.google.id = profile.id;
+          newUser.google.userId = profile.id;
           newUser.google.displayName = profile.displayName;
           newUser.google.token = accessToken;
           newUser.google.email = profile.emails[0].value;
