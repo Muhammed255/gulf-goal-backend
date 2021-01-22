@@ -390,7 +390,8 @@ export default {
         return res.status(400).json({ success: false, msg: "Unauthorized!" });
       }
       let imagePath = req.body.image;
-      const imageBuffer = new Buffer.from(imagePath, 'base64');
+      let imageInfo = imagePath.split(";base64,").pop();
+      const imageBuffer = new Buffer.from(imageInfo, 'base64');
       let imageData, imageId;
       
       fs.writeFileSync(path.join(__dirname,`../images/image-123.jpg`), imageBuffer, (err) => {
@@ -402,7 +403,6 @@ export default {
           resource_type: "image",
         });
       }
-      
       // if(imagePath) {
         // if(authUser.cloudinary_id === 'noimage_ew1uri') {
       const imageResult = await cloudinary.uploader.upload('images/image-123.jpg', {
@@ -410,7 +410,7 @@ export default {
       });
       imageData = imageResult.secure_url;
       imageId = imageResult.public_id;
-      console.log(path.join(__dirname,`../images`));
+      //console.log(path.join(__dirname,`../images`));
       fs.unlinkSync(path.join(__dirname,`../images/image-123.jpg`), (err) => {
         console.log("File Deleted");
       });
