@@ -8,7 +8,7 @@ import { appConfig } from "../middleware/app-config.js";
 import ResetToken from "../models/reset-token.model.js";
 import User from "../models/user.model.js";
 import cloudinary from "../middleware/cloudinary.js";
-import Jimp from "jimp";
+
 
 // import { dirname } from "path";
 // import { fileURLToPath } from "url";
@@ -430,11 +430,5 @@ export default {
         console.log(err);
         res.status(500).json({ success: false, msg: "Error occured" });
       }
-      // let base64Image = imagePath.split(';base64,').pop();
-      // const imageBuffer = Buffer.from(imagePath.toString(), 'base64');
-      // const resp = await Jimp.read(imageBuffer);
-      // resp.quality(5).write("/images/file.jpg");
-      
-      // console.log("buffer: " + imageBuffer);
   },
 };
