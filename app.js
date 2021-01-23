@@ -7,15 +7,15 @@ import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 // import session from "express-session";
-import passport from "passport";
-import cors from "cors";
-import cookieSession from 'cookie-session';
+// import passport from "passport";
+// import cors from "cors";
+// import cookieSession from 'cookie-session';
 
 import User from "./models/user.model.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { appConfig } from "./middleware/app-config.js";
 // import { jwtConfig } from "./middleware/passport-jwt.js";
-import { PassportGoogle } from "./middleware/passport-google.js";
+// import { PassportGoogle } from "./middleware/passport-google.js";
 // import { FacebookPassport } from "./middleware/passport-facebook.js";
 import { newsRoutes } from "./routes/news.routes.js";
 import { teamsRoutes } from "./routes/teams.routes.js";
@@ -48,23 +48,23 @@ app.use(bodyParser.text({ limit: "200mb" }));
 //   })
 // );
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 // jwtConfig();
-PassportGoogle();
+// PassportGoogle();
 // FacebookPassport();
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    if (err) {
-      return done(err, null);
-    }
-    return done(null, user);
-  });
-});
+// passport.deserializeUser((id, done) => {
+//   User.findById(id, (err, user) => {
+//     if (err) {
+//       return done(err, null);
+//     }
+//     return done(null, user);
+//   });
+// });
 
 //Setup CORS
 app.use(cors());
@@ -85,11 +85,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cookieSession({
-  // milliseconds of a 1000 day
-  maxAge: 24*60*60*1000*1000,
-  keys:[appConfig.cookieKey]
-}));
 
 app.use("/api/users", userRoutes);
 

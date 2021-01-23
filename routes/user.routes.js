@@ -70,8 +70,7 @@ userRoutes.post(
 userRoutes.post("/test", checkAuth, userController.test);
 
 userRoutes.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  "/google", userController.google_signup
 );
 
 userRoutes.get(

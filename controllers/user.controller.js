@@ -9,7 +9,6 @@ import ResetToken from "../models/reset-token.model.js";
 import User from "../models/user.model.js";
 import cloudinary from "../middleware/cloudinary.js";
 
-
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -64,20 +63,59 @@ export default {
 
   async google_signup(req, res, next) {
     try {
-      const { displayName, email, token, userId } = req.body;
+      const { displayName, email } = req.body;
+
+      const authUser = await User.findOne({ "google.email": email });
+      if (authUser) {
+        const authToken = jwt.sign(
+          {
+            userId: authUser._id,
+            email: authUser.google.email,
+            username: authUser.google.displayName,
+          },
+          appConfig.securityCode,
+          {
+            expiresIn: "360d",
+          }
+        );
+        res.status(200).json({
+          success: true,
+          msg: "Registered Successfully....",
+          token: authToken,
+          userId: authUser._id
+        });
+        return;
+      }
+
 
       const user = await User.create({
         "google.displayName": displayName,
         "google.email": email,
-        "google.token": token,
-        "google.userId": userId,
       });
-      res
-        .status(200)
-        .json({ success: true, msg: "Registered Successfully....", token });
+
+      const token = jwt.sign(
+        {
+          userId: user._id,
+          email: user.google.email,
+          username: user.google.displayName,
+        },
+        appConfig.securityCode,
+        {
+          expiresIn: "360d",
+        }
+      );
+
+      res.status(200).json({
+          success: true,
+          msg: "Registered Successfully....",
+          token,
+          userId: user._id
+        });
     } catch (err) {
       console.log("Error: " + err);
-      return res.status(500).json({ err });
+      return res
+        .status(500)
+        .json({ success: false, msg: "Error Occured: " + err });
     }
   },
 
@@ -237,7 +275,7 @@ export default {
 
   google_auth_logout(req, res, next) {
     req.logout();
-    res.status(200).json({msg: "Logged out", success: true});
+    res.status(200).json({ msg: "Logged out", success: true });
   },
   // sendFacebookJWTToken(req, res, next) {
   //   const token = jwt.sign(
@@ -257,9 +295,7 @@ export default {
       })
         .populate("fav_news")
         .sort({ created_at: -1 });
-      res
-        .status(200)
-        .json({ success: true, users: fetchedUsers });
+      res.status(200).json({ success: true, users: fetchedUsers });
     } catch (err) {
       res.status(500).json({ err });
     }
@@ -268,7 +304,7 @@ export default {
   async countUsers(req, res, next) {
     try {
       const count = await User.estimatedDocumentCount();
-      res.status(200).json({success: true, count: count});
+      res.status(200).json({ success: true, count: count });
     } catch (err) {
       res.status(500).json({ err });
     }
@@ -391,44 +427,56 @@ export default {
       }
       let imagePath = req.body.image;
       let imageInfo = imagePath.split(";base64,").pop();
-      const imageBuffer = new Buffer.from(imageInfo, 'base64');
+      const imageBuffer = new Buffer.from(imageInfo, "base64");
       let imageData, imageId;
-      
-      fs.writeFileSync(path.join(__dirname,`../images/image-123.jpg`), imageBuffer, (err) => {
-        console.log('File Created');
-      });
-      if(authUser.cloudinary_id) {
+
+      fs.writeFileSync(
+        path.join(__dirname, `../images/image-123.jpg`),
+        imageBuffer,
+        (err) => {
+          console.log("File Created");
+        }
+      );
+      if (authUser.cloudinary_id) {
         await cloudinary.uploader.destroy(authUser.cloudinary_id, {
           invalidate: true,
           resource_type: "image",
         });
       }
       // if(imagePath) {
-        // if(authUser.cloudinary_id === 'noimage_ew1uri') {
-      const imageResult = await cloudinary.uploader.upload('images/image-123.jpg', {
-        folder: "users",
-      });
+      // if(authUser.cloudinary_id === 'noimage_ew1uri') {
+      const imageResult = await cloudinary.uploader.upload(
+        "images/image-123.jpg",
+        {
+          folder: "users",
+        }
+      );
       imageData = imageResult.secure_url;
       imageId = imageResult.public_id;
       //console.log(path.join(__dirname,`../images`));
-      //fs.unlinkSync(path.join(__dirname,`../images/image-123.jpg`), (err) => {
-        //console.log("File Deleted");
-      //});
-        // } else {
-          
-        // }
+      fs.unlinkSync(path.join(__dirname, `../images/image-123.jpg`), (err) => {
+        console.log("File Deleted");
+      });
+      // } else {
+
       // }
-      
-      
+      // }
+
       await User.findOneAndUpdate(
         { _id: req.userData.userId },
-        { image: imageData, cloudinary_id: imageId},
+        { image: imageData, cloudinary_id: imageId },
         { new: true, upsert: true }
-        );
-        res.status(200).json({ success: true, msg: "Image Updated....", image: imageResult.secure_url });
-      } catch (err) {
-        console.log(err);
-        res.status(500).json({ success: false, msg: "Error occured: " + err });
-      }
+      );
+      res
+        .status(200)
+        .json({
+          success: true,
+          msg: "Image Updated....",
+          image: imageResult.secure_url,
+        });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ success: false, msg: "Error occured: " + err });
+    }
   },
 };

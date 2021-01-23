@@ -29,7 +29,7 @@ export default {
         tag,
       });
       await news.save();
-      res.status(200).json({ success: true, msg: "News created !!" });
+      res.status(200).json({ success: true, msg: "News created !!", createdNews: news });
     } catch (err) {
       console.log(err);
       res.status(500).json({ err });
