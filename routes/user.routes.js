@@ -40,8 +40,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-
-
 userRoutes.post("/signup", userController.signup);
 
 userRoutes.post("/facebook-signup", userController.facebook_signup);
@@ -63,21 +61,21 @@ userRoutes.post("/new-password/:resetToken", userController.newPassword);
 userRoutes.post(
   "/update-image",
   checkAuth,
-  multer({ storage: multer.diskStorage({}), fileFilter: fileFilter }).single("image"),
+  multer({ storage: multer.diskStorage({}), fileFilter: fileFilter }).single(
+    "image"
+  ),
   userController.updateProfileImage
 );
 
 userRoutes.post("/test", checkAuth, userController.test);
 
-userRoutes.get(
-  "/google", userController.google_signup
-);
+userRoutes.get("/google", userController.google_signup);
 
-userRoutes.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/failure" }),
-  userController.sendJWTToken
-);
+// userRoutes.get(
+//   "/google/callback",
+//   passport.authenticate("google", { failureRedirect: "/failure" }),
+//   userController.sendJWTToken
+// );
 
 userRoutes.get("/google-logout", userController.google_auth_logout);
 

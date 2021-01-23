@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 // import session from "express-session";
 // import passport from "passport";
-// import cors from "cors";
+import cors from "cors";
 // import cookieSession from 'cookie-session';
 
 import User from "./models/user.model.js";

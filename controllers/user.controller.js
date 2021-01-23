@@ -80,9 +80,10 @@ export default {
         );
         res.status(200).json({
           success: true,
-          msg: "Registered Successfully....",
+          msg: "Loggedin Successfully....",
           token: authToken,
-          userId: authUser._id
+          userId: authUser._id,
+          image: authUser.image
         });
         return;
       }
@@ -109,7 +110,8 @@ export default {
           success: true,
           msg: "Registered Successfully....",
           token,
-          userId: user._id
+          userId: user._id,
+          image: user.image
         });
     } catch (err) {
       console.log("Error: " + err);
