@@ -67,9 +67,9 @@ userRoutes.post(
   userController.updateProfileImage
 );
 
-userRoutes.post("/test", checkAuth, userController.test);
+userRoutes.post("/google", userController.google_signup);
 
-userRoutes.get("/google", userController.google_signup);
+userRoutes.post("/test", checkAuth, userController.test);
 
 // userRoutes.get(
 //   "/google/callback",
