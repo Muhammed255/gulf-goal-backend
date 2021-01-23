@@ -642,16 +642,15 @@ export default {
 
   async removeTrend(req, res, next) {
     try {
-      const trend = await Trends.findById(req.params.trendId);
-      console.log(JSON.stringify(trend));
-      if (!trend) {
+      const newsToTrend = await News.findById(req.params.newsId);
+      if (!newsToTrend) {
         return res.status(401).json({ success: false, msg: "No Id provided" });
       }
 
-      const news = await News.findOne({ _id: trend.newsId });
-      if (!news) {
-        return res.status(401).json({ success: false, msg: "No Id provided" });
-      }
+      // const news = await News.findOne({ _id: newToTrend.newsId });
+      // if (!news) {
+      //   return res.status(401).json({ success: false, msg: "No Id provided" });
+      // }
 
       // const trends = await Trends.find();
       // if (!trends) {
@@ -665,12 +664,12 @@ export default {
       //   (t) => t.newsId.toString() === news._id.toString()
       // );
 
-      news.is_trend = false;
-      await news.save();
+      newsToTrend.is_trend = false;
+      await newsToTrend.save();
 
-      await Trends.findOneAndDelete({ _id: trend._id });
+      // await Trends.findOneAndDelete({ _id: trend._id });
 
-      res.status(200).json({ success: true, msg: "Trend Deleted!!" });
+      res.status(200).json({ success: true, msg: "News Removed from trends!!" });
     } catch (err) {
       console.log(err);
       res.status(500).json({ err });

@@ -61,7 +61,7 @@ newsRoutes.post("/like-comment", checkAuth, newsController.likeNewsComment);
 
 newsRoutes.post("/trend/:newsId", checkAuth, newsController.makeNewsTrend);
 
-newsRoutes.delete("/trend/:trendId", checkAuth, newsController.removeTrend);
+newsRoutes.delete("/trend/:newsId", checkAuth, newsController.removeTrend);
 
 newsRoutes.get("/all-news", newsController.allNews);
 
