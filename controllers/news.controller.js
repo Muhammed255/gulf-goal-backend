@@ -240,12 +240,9 @@ export default {
           newsToUpdate.cloudinary_id,
           { invalidate: true, resource_type: "image" }
         );
-      }
-
-      const imageResult = await cloudinary.uploader.upload(req.file.path, {
-        folder: "news",
-      });
-      if(req.file) {
+        const imageResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: "news",
+        });
         imagePath = imageResult.secure_url;
         imageId = imageResult.public_id;
       }
@@ -255,7 +252,7 @@ export default {
         { title, content, image: imagePath, cloudinary_id: imageId, tag },
         { new: true }
       );
-      res.status(200).json({ success: true, msg: "News Updated !!" });
+      res.status(200).send({ success: true, msg: "News Updated !!" });
     } catch (err) {
       console.log(err);
       res.status(500).json({ success: false, msg: "Error Occured: " + err });
