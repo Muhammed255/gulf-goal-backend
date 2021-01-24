@@ -84,6 +84,7 @@ export default {
           first_time: false,
           token: authToken,
           userId: authUser._id,
+ 	  username: authUser.google.displayName,
           image: authUser.image
         });
         return;
@@ -113,6 +114,7 @@ export default {
           first_time: true,
           token,
           userId: user._id,
+	  username: user.google.displayName,
           image: user.image
         });
     } catch (err) {
