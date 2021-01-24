@@ -81,6 +81,7 @@ export default {
         res.status(200).json({
           success: true,
           msg: "Loggedin Successfully....",
+          first_time: false,
           token: authToken,
           userId: authUser._id,
           image: authUser.image
@@ -109,6 +110,7 @@ export default {
       res.status(200).json({
           success: true,
           msg: "Registered Successfully....",
+          first_time: true,
           token,
           userId: user._id,
           image: user.image
