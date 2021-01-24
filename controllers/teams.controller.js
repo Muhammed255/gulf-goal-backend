@@ -228,12 +228,12 @@ export default {
         .populate({
           path: "comments.commentator",
           model: "User",
-          select: "local.username image",
+          select: "local.username image google.displayName",
         })
         .populate({
           path: "comments.replies.replier",
           model: "User",
-          select: "local.username image",
+          select: "local.username image google.displayName",
         })
         .select("comments -_id");
       if (!foundMatch) {
