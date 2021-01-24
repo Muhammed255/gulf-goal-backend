@@ -13,18 +13,6 @@ var userSchema = new mongoose.Schema({
     username: String,
     password: String,
   },
-  google: {
-    email: String,
-    userId: String,
-    displayName: String,
-    token: String,
-  },
-  facebook: {
-    email: String,
-    userId: String,
-    displayName: String,
-    token: String,
-  },
   fav_news: [
     {
       type: ObjectId,

@@ -65,13 +65,13 @@ export default {
     try {
       const { displayName, email } = req.body;
 
-      const authUser = await User.findOne({ "google.email": email });
+      const authUser = await User.findOne({ "local.email": email });
       if (authUser) {
         const authToken = jwt.sign(
           {
             userId: authUser._id,
-            email: authUser.google.email,
-            username: authUser.google.displayName,
+            email: authUser.local.email,
+            username: authUser.local.userame,
           },
           appConfig.securityCode,
           {
@@ -84,7 +84,7 @@ export default {
           first_time: false,
           token: authToken,
           userId: authUser._id,
- 	  username: authUser.google.displayName,
+ 	  username: authUser.local.username,
           image: authUser.image
         });
         return;
@@ -92,15 +92,15 @@ export default {
 
 
       const user = await User.create({
-        "google.displayName": displayName,
-        "google.email": email,
+        "local.username": displayName,
+        "local.email": email,
       });
 
       const token = jwt.sign(
         {
           userId: user._id,
-          email: user.google.email,
-          username: user.google.displayName,
+          email: user.local.email,
+          username: user.local.username,
         },
         appConfig.securityCode,
         {
@@ -114,7 +114,7 @@ export default {
           first_time: true,
           token,
           userId: user._id,
-	  username: user.google.displayName,
+	  username: user.local.username,
           image: user.image
         });
     } catch (err) {
